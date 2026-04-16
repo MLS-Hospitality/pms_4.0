@@ -105,8 +105,6 @@
 
     payload = $.extend({}, payload || {}, getCsrfData());
 
-    console.log("POST URL:", url);
-    console.log("POST payload:", payload);
 
     $.ajax({
         url: url,
