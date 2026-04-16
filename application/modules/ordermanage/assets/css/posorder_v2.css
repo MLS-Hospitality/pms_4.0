@@ -1,0 +1,256 @@
+.posv2 {
+    padding: 14px;
+    background: #f6f8fb;
+    min-height: calc(100vh - 60px);
+    overflow-x: hidden;
+}
+
+.posv2-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.posv2-header h2 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.posv2-header p {
+    margin: 4px 0 0;
+    color: #6b7280;
+}
+
+.posv2-home-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #1f7a3d;
+    color: #fff;
+    text-decoration: none;
+    font-size: 20px;
+    flex: 0 0 44px;
+}
+
+.posv2-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 16px;
+    align-items: start;
+}
+
+.posv2-left,
+.posv2-right {
+    min-width: 0;
+}
+
+.posv2-panel {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 14px;
+    margin-bottom: 14px;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+}
+
+.posv2-panel-head {
+    margin-bottom: 12px;
+}
+
+.posv2-panel-head h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.posv2-search {
+    margin-bottom: 12px;
+}
+
+.posv2 .form-control,
+.posv2 select {
+    min-height: 42px;
+    border-radius: 10px;
+    width: 100%;
+}
+
+.posv2 .row {
+    margin-left: -6px;
+    margin-right: -6px;
+}
+
+.posv2 .row > [class*="col-"] {
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
+.posv2-categories {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+    scrollbar-width: thin;
+}
+
+.posv2-cat {
+    border: 0;
+    background: #eef2f7;
+    color: #374151;
+    padding: 10px 14px;
+    border-radius: 999px;
+    white-space: nowrap;
+    font-weight: 600;
+    flex: 0 0 auto;
+}
+
+.posv2-cat.active,
+.posv2-cat:hover {
+    background: #1f7a3d;
+    color: #fff;
+}
+
+.posv2-products .row {
+    margin-left: -6px;
+    margin-right: -6px;
+}
+
+.posv2-products [class*="col-"] {
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
+.posv2-product-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    overflow: hidden;
+    height: 100%;
+    cursor: pointer;
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+.posv2-product-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 18px rgba(15, 23, 42, 0.08);
+    border-color: #cbd5e1;
+}
+
+.posv2-product-image img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    display: block;
+}
+
+.posv2-product-info {
+    padding: 12px;
+}
+
+.posv2-product-info h4 {
+    margin: 0 0 6px;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.posv2-product-info p {
+    margin: 0 0 8px;
+    color: #6b7280;
+    font-size: 12px;
+    line-height: 1.3;
+}
+
+.posv2-product-info strong {
+    font-size: 14px;
+    color: #111827;
+}
+
+.posv2-right {
+    position: sticky;
+    top: 12px;
+}
+
+.posv2-summary-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.posv2-summary-row span {
+    font-weight: 500;
+}
+
+.posv2-summary-row.grand {
+    padding-top: 12px;
+    border-top: 1px solid #e5e7eb;
+    font-size: 18px;
+}
+
+.posv2-summary-row .form-control {
+    max-width: 120px;
+    text-align: right;
+}
+
+.posv2-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.posv2-actions .btn {
+    min-height: 42px;
+    border-radius: 10px;
+}
+
+#addfoodlist {
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+@media (max-width: 1366px) {
+    .posv2-layout {
+        grid-template-columns: minmax(0, 1fr) 320px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .posv2-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .posv2-right {
+        position: static;
+    }
+
+    #addfoodlist {
+        max-height: none;
+    }
+}
+
+@media (max-width: 767px) {
+    .posv2 {
+        padding: 12px;
+    }
+
+    .posv2-header h2 {
+        font-size: 22px;
+    }
+
+    .posv2-product-image img {
+        height: 110px;
+    }
+
+    .posv2-actions {
+        grid-template-columns: 1fr;
+    }
+}
