@@ -20,15 +20,17 @@
     }
 
     function getCsrfData() {
-        var $token = $("#csrf_token");
-        var data = {};
+    var tokenName = $("#csrf_token_name").val();
+    var tokenValue = $("#csrf_token_value").val();
+    var data = {};
 
-        if ($token.length) {
-            data[$token.attr("name")] = $token.val();
-        }
-
-        return data;
+    if (tokenName && tokenValue) {
+        data[tokenName] = tokenValue;
     }
+
+    return data;
+    }
+
 
     function syncSearchOptionsFromCards() {
         var $select = $("#product_name");
@@ -99,24 +101,28 @@
     }
 
     function postCart(url, payload, onSuccess) {
-        if (!url) return;
+    if (!url) return;
 
-        payload = $.extend({}, payload || {}, getCsrfData());
+    payload = $.extend({}, payload || {}, getCsrfData());
 
-        $.ajax({
-            url: url,
-            type: "POST",
-            data: payload,
-            cache: false,
-            success: function (response) {
-                if (typeof onSuccess === "function") onSuccess(response);
-            },
-            error: function (xhr) {
-                console.error("Cart request failed:", xhr.status, xhr.responseText);
-                alert("Request failed (" + xhr.status + "). Please refresh and try again.");
-            }
-        });
-    }
+    console.log("POST URL:", url);
+    console.log("POST payload:", payload);
+
+    $.ajax({
+        url: url,
+        type: "POST",
+        data: payload,
+        cache: false,
+        success: function (response) {
+            if (typeof onSuccess === "function") onSuccess(response);
+        },
+        error: function (xhr) {
+            console.error("Cart request failed:", xhr.status, xhr.responseText);
+            alert("Request failed (" + xhr.status + "). Please refresh and try again.");
+        }
+    });
+}
+
 
     function readProductPayload($card) {
         return {

@@ -6,6 +6,14 @@
     var baseurl = "<?php echo base_url(); ?>";
 </script>
 
+<input type="hidden"
+       id="csrf_token_name"
+       value="<?php echo $this->security->get_csrf_token_name(); ?>">
+
+<input type="hidden"
+       id="csrf_token_value"
+       value="<?php echo $this->security->get_csrf_hash(); ?>">
+
 <input name="url" type="hidden" id="posurl"
     value="<?php echo site_url('ordermanage/order/getitemlist') ?>" />
 <input name="url" type="hidden" id="productdata"
@@ -239,7 +247,4 @@
 </div>
 
 <script src="<?php echo base_url();?>assets/js/jquery.validate.min.js" type="text/javascript"></script>
-
-<script src="<?php echo site_url('ordermanage/order/possettingjs') ?>" type="text/javascript"></script>
-<script src="<?php echo site_url('ordermanage/order/quickorderjs') ?>" type="text/javascript"></script>
 <script src="<?php echo base_url('application/modules/ordermanage/assets/js/posorder_v2.js'); ?>" type="text/javascript"></script>
