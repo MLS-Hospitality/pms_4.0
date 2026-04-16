@@ -154,6 +154,44 @@ class Order extends MX_Controller {
 
 	}
 
+	public function customer_due_summary($customerId = null)
+{
+    $this->output->set_content_type('application/json');
+
+    if (empty($customerId)) {
+        echo json_encode([
+            'status' => false,
+            'message' => 'Customer ID is required'
+        ]);
+        return;
+    }
+
+    $summary = $this->order_model->get_customer_due_summary((int)$customerId);
+
+    if (empty($summary)) {
+        echo json_encode([
+            'status' => false,
+            'message' => 'No customer summary found'
+        ]);
+        return;
+    }
+
+    echo json_encode([
+        'status' => true,
+        'data' => $summary
+    ]);
+}
+
+public function customer_pending_bills($customerId = null)
+{
+    if (empty($customerId)) {
+        show_error('Customer ID is required');
+    }
+
+    $data['summary'] = $this->order_model->get_customer_due_summary((int)$customerId);
+    $this->load->view('pending_customer_bills_modal', $data);
+}
+
 
 	
 	public function insert_customerord(){
@@ -276,7 +314,7 @@ class Order extends MX_Controller {
 		   $saveid=$this->session->userdata('id');
 		   $data['categorylist']  = $this->order_model->category_dropdown();
 		   $data['customerlist']  = $this->order_model->customer_dropdown2();
-		   $data['oldcustlist']   = $this->order_model->oldcustomer_dropdown();
+		   $data['oldcustlist']        = $this->order_model->oldcustomer_dropdown();
 		   $data['paymentmethod'] = $this->order_model->pmethod_dropdown();
 		   $data['curtomertype']  = $this->order_model->ctype_dropdown();
 		   $data['thirdpartylist']  = $this->order_model->thirdparty_dropdown();
@@ -2279,7 +2317,7 @@ public function ordertoday()
 		   
 		   $customerorder=$this->order_model->read('*', 'customer_order', array('order_id' => $id));
 		   $data['categorylist']   = $this->order_model->category_dropdown();
-		    $data['customerlist']  = $this->order_model->customer_dropdown2();
+	     	$data['customerlist']       = $this->order_model->customer_dropdown2();
 		   $data['curtomertype']   = $this->order_model->ctype_dropdown();
 		   $data['waiterlist']     = $this->order_model->waiter_dropdown();
 		   $data['tablelist']      = $this->order_model->table_dropdown();
@@ -2312,6 +2350,7 @@ public function ordertoday()
 		   $customerorder=$this->order_model->read('*', 'customer_order', array('order_id' => $id));
 		   $data['categorylist']   = $this->order_model->category_dropdown();
 		    $data['customerlist']  = $this->order_model->customer_dropdown2();
+			$data['savedcustomerlist']  = $this->order_model->customer_dropdown();
 		   $data['curtomertype']   = $this->order_model->ctype_dropdown();
 		   $data['waiterlist']     = $this->order_model->waiter_dropdown();
 		   $data['tablelist']      = $this->order_model->table_dropdown();
@@ -5581,4 +5620,53 @@ public function ordertoday()
 		$data['customerorder']=$this->order_model->read('*', 'customer_order', array('order_id' => $id));
 		echo('window.orderinfo = ' . json_encode($data['customerorder']) . ';');
 		}
+
+	
+		public function pos_invoice_v2()
+{
+    if ($this->permission->method('ordermanage','create')->access() == FALSE) {
+        redirect('dashboard/home');
+    }
+
+    $saveid = $this->session->userdata('id');
+
+    // POS v2 runs beside legacy POS to reduce regression risk.
+    $data['title']             = "POS Invoice V2";
+    $data['categorylist']      = $this->order_model->category_dropdown();
+    $data['customerlist']      = $this->order_model->customer_dropdown2();
+    $data['savedcustomerlist'] = $this->order_model->customer_dropdown();
+    $data['oldcustlist']       = $this->order_model->oldcustomer_dropdown();
+    $data['paymentmethod']     = $this->order_model->pmethod_dropdown();
+    $data['curtomertype']      = $this->order_model->ctype_dropdown();
+    $data['thirdpartylist']    = $this->order_model->thirdparty_dropdown();
+    $data['banklist']          = $this->order_model->bank_dropdown();
+    $data['terminalist']       = $this->order_model->allterminal_dropdown();
+    $data['waiterlist']        = $this->order_model->waiter_dropdown();
+    $data['tablelist']         = $this->order_model->table_dropdown();
+    $data['itemlist']          = $this->order_model->allfood2();
+    $data['ongoingorder']      = $this->order_model->get_ongoingorder();
+    $data['possetting']        = $this->order_model->read('*', 'tbl_posetting', array('possettingid' => 1));
+    $data['possetting2']       = $this->order_model->read('*', 'tbl_quickordersetting', array('quickordid' => 1));
+    $data['soundsetting']      = $this->order_model->read('*', 'tbl_soundsetting', array('soundid' => 1));
+
+    $settinginfo = $this->order_model->settinginfo();
+    $data['settinginfo'] = $settinginfo;
+    $data['currency']    = $this->order_model->currencysetting($settinginfo->currency);
+    $data['taxinfos']    = $this->taxchecking();
+
+    $checkModule = $this->db->where('directory', 'day_closing')->where('status', 1)->get('module')->num_rows();
+    if ($checkModule == 1) {
+        $data['cashinfo'] = $this->db->select('*')
+            ->from('tbl_cashregister')
+            ->where('userid', $saveid)
+            ->where('status', 0)
+            ->order_by('id', 'DESC')
+            ->get()
+            ->row();
+    }
+
+    $data['module'] = "ordermanage";
+    $data['page']   = "posorder_v2";
+    echo Modules::run('template/layout', $data);
+}
 }

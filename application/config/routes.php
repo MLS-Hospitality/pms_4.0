@@ -259,6 +259,7 @@ $route['ordermanage/menu-addons-list'] = "ordermanage/menu_addons/index";
 $route['ordermanage/assign-menu-addons'] = "ordermanage/menu_addons/assignaddons";
 
 // Order Management
+$route['ordermanage/pos-invoice-v2'] = "ordermanage/order/pos_invoice_v2";
 $route['ordermanage/pos-invoice'] = "ordermanage/order/pos_invoice";
 $route['ordermanage/order-list'] = "ordermanage/order/orderlist";
 $route['ordermanage/order-today'] = "ordermanage/order/ordertoday";
