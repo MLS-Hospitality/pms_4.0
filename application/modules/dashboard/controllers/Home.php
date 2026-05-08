@@ -31,71 +31,134 @@ class Home extends MX_Controller {
 	public function index()
 	{
 		$data['title']    = "Home";
-		$ordernum= $this->home_model->countorder();
-		$orderchekin= $this->home_model->countcheckin();
-		$orderpending= $this->home_model->countpending();
-	
-		$ordercancel= $this->home_model->countcancel();
-		$data["totalorder"]  =$this->changeformat($ordernum);
-		$data["totalcheckin"]  =$this->changeformat($orderchekin);
-		$data["totalpending"]  =$this->changeformat($orderpending);
-		$data["totalcancel"]  =$this->changeformat($ordercancel);
-		$todayorder=$this->home_model->todayorder();
-		$data["todaybooking"]  = $this->changeformat($todayorder);
-		$totalamount=$this->home_model->totalamount();
-		$data["totalamount"]  = $this->changeformat($totalamount->amount);
-		$customer=$this->home_model->totalcustomer();
-		$data["totalcustomer"]  = $this->changeformat($customer);
-		$data['customerlist']=$this->home_model->customerlist();
-		$data['todayorder']=$this->home_model->todayorderlist();
-		$data['nextayorder']=$this->home_model->nextdayorderlist();
 
-		// Enhanced Dashboard Counters
-		$data['todayReservations']     = $this->home_model->todayReservations();
-		$data['todayPaidAmount']       = $this->home_model->todayPaidAmount();
-		$data['pendingAmount']         = $this->home_model->pendingAmount();
+		// Initialize default values to prevent "Undefined variable" errors for users with limited permissions
+		$data["totalorder"]    = 0;
+		$data["totalcheckin"]   = 0;
+		$data["totalpending"]   = 0;
+		$data["totalcancel"]    = 0;
+		$data["todaybooking"]   = 0;
+		$data["totalamount"]    = 0;
+		$data["totalcustomer"]  = 0;
+		$data['customerlist']   = array();
+		$data['todayorder']     = array();
+		$data['nextayorder']    = array();
 		
-		$data['totalCompletedBookings'] = $this->home_model->totalCompletedBookings();
-		$data['currentMonthRevenue']   = $this->home_model->currentMonthRevenue();
-		$data['todayOccupancyRate']    = $this->home_model->todayOccupancyRate();
-		$data['customersCheckedInToday'] = $this->home_model->customersCheckedInToday();
-		$data['todayCheckIns']         = $this->home_model->todayCheckIns();
-		$data['todayCheckOuts']        = $this->home_model->todayCheckOuts();
-		$data['revenueComparison']     = $this->home_model->revenueComparison();
-		$data['topRoomTypes']          = $this->home_model->topRoomTypes();
-		$data['recentActivities']      = $this->home_model->recentActivities();
+		$data['todayReservations']       = 0;
+		$data['todayPaidAmount']         = 0;
+		$data['pendingAmount']           = 0;
+		$data['totalCompletedBookings']  = 0;
+		$data['currentMonthRevenue']     = 0;
+		$data['todayOccupancyRate']      = 0;
+		$data['customersCheckedInToday'] = 0;
+		$data['todayCheckIns']           = 0;
+		$data['todayCheckOuts']          = 0;
+		$data['revenueComparison']       = array('percentage' => 0);
+		$data['topRoomTypes']            = array();
+		$data['recentActivities']        = array();
 
-		// Restaurant Order Statistics
-		$data['todayRestaurantOrders'] = $this->home_model->todayRestaurantOrders();
-		$data['todayRestaurantOrdersAll'] = $this->home_model->todayRestaurantOrdersAll(); // Active + Pending + Paid
-		$data['todayPaidRestaurantRevenue'] = $this->home_model->todayPaidRestaurantRevenue(); // Only paid orders
-		$data['pendingRestaurantOrders'] = $this->home_model->pendingRestaurantOrders();
-		$data['todayRestaurantRevenue'] = $this->home_model->todayRestaurantRevenue();
-		$data['totalRestaurantOrders'] = $this->home_model->totalRestaurantOrders();
-		$data['totalRestaurantRevenue'] = $this->home_model->totalRestaurantRevenue();
-		$data['processingRestaurantOrders'] = $this->home_model->processingRestaurantOrders();
-		$data['readyRestaurantOrders'] = $this->home_model->readyRestaurantOrders();
-		$data['recentRestaurantOrders'] = $this->home_model->recentRestaurantOrders(5);
-		$data['currentMonthRestaurantRevenue'] = $this->home_model->currentMonthRestaurantRevenue();
-		$data['currentMonthRestaurantOrders'] = $this->home_model->currentMonthRestaurantOrders();
+		$data['todayRestaurantOrders']     = 0;
+		$data['todayRestaurantOrdersAll']  = 0;
+		$data['todayPaidRestaurantRevenue'] = 0;
+		$data['pendingRestaurantOrders']   = 0;
+		$data['todayRestaurantRevenue']    = 0;
+		$data['totalRestaurantOrders']     = 0;
+		$data['totalRestaurantRevenue']    = 0;
+		$data['processingRestaurantOrders'] = 0;
+		$data['readyRestaurantOrders']     = 0;
+		$data['recentRestaurantOrders']    = array();
+		$data['currentMonthRestaurantRevenue'] = 0;
+		$data['currentMonthRestaurantOrders']  = 0;
+		$data['topSellingFoodItems']       = array();
+		$data['topSellingBeverageItems']   = array();
+		$data['topSellingItems']           = array();
+		$data['todayFoodRevenue']          = 0;
+		$data['todayBeverageRevenue']      = 0;
+		$data['todayPaidFoodRevenue']      = 0;
+		$data['todayPaidBeverageRevenue']  = 0;
+		$data['currentMonthFoodRevenue']   = 0;
+		$data['currentMonthBeverageRevenue'] = 0;
+		$data['totalFoodRevenue']          = 0;
+		$data['totalBeverageRevenue']      = 0;
+		$data['categoryWiseSales']         = array();
+		$data['foodBeverageComparisonToday'] = array();
+		$data['categorizedPayments']       = array('booking' => 0, 'f_b' => 0, 'pools' => 0, 'parking' => 0, 'other' => 0, 'total' => 0);
 
-		// Food and Beverage Reports
-		$data['topSellingFoodItems'] = $this->home_model->topSellingFoodItems(10);
-		$data['topSellingBeverageItems'] = $this->home_model->topSellingBeverageItems(10);
-		$data['topSellingItems'] = $this->home_model->topSellingItems(10); // Fallback if menutype not set
-		$data['todayFoodRevenue'] = $this->home_model->todayFoodRevenue();
-		$data['todayBeverageRevenue'] = $this->home_model->todayBeverageRevenue();
-		$data['todayPaidFoodRevenue'] = $this->home_model->todayPaidFoodRevenue();
-		$data['todayPaidBeverageRevenue'] = $this->home_model->todayPaidBeverageRevenue();
-		$data['currentMonthFoodRevenue'] = $this->home_model->currentMonthFoodRevenue();
-		$data['currentMonthBeverageRevenue'] = $this->home_model->currentMonthBeverageRevenue();
-		$data['totalFoodRevenue'] = $this->home_model->totalFoodRevenue();
-		$data['totalBeverageRevenue'] = $this->home_model->totalBeverageRevenue();
-		$data['categoryWiseSales'] = $this->home_model->categoryWiseSales(10);
-		$data['foodBeverageComparisonToday'] = $this->home_model->foodBeverageComparisonToday();
+		// Room Reservation Permissions
+		$res_read = $this->permission->method('room_reservation', 'read')->access();
+		if ($res_read) {
+			$ordernum= $this->home_model->countorder();
+			$orderchekin= $this->home_model->countcheckin();
+			$orderpending= $this->home_model->countpending();
+			$ordercancel= $this->home_model->countcancel();
+			$data["totalorder"]  =$this->changeformat($ordernum);
+			$data["totalcheckin"]  =$this->changeformat($orderchekin);
+			$data["totalpending"]  =$this->changeformat($orderpending);
+			$data["totalcancel"]  =$this->changeformat($ordercancel);
+			$todayorder=$this->home_model->todayorder();
+			$data["todaybooking"]  = $this->changeformat($todayorder);
+			$totalamount=$this->home_model->totalamount();
+			$data["totalamount"]  = $this->changeformat($totalamount->amount);
+			$customer=$this->home_model->totalcustomer();
+			$data["totalcustomer"]  = $this->changeformat($customer);
+			$data['customerlist']=$this->home_model->customerlist();
+			$data['todayorder']=$this->home_model->todayorderlist();
+			$data['nextayorder']=$this->home_model->nextdayorderlist();
 
-		// Payment Categories Analytics
-		$data['categorizedPayments'] = $this->home_model->getCategorizedPayments();
+			// Enhanced Dashboard Counters
+			$data['todayReservations']     = $this->home_model->todayReservations();
+			$data['todayPaidAmount']       = $this->home_model->todayPaidAmount();
+			$data['pendingAmount']         = $this->home_model->pendingAmount();
+			
+			$data['totalCompletedBookings'] = $this->home_model->totalCompletedBookings();
+			$data['currentMonthRevenue']   = $this->home_model->currentMonthRevenue();
+			$data['todayOccupancyRate']    = $this->home_model->todayOccupancyRate();
+			$data['customersCheckedInToday'] = $this->home_model->customersCheckedInToday();
+			$data['todayCheckIns']         = $this->home_model->todayCheckIns();
+			$data['todayCheckOuts']        = $this->home_model->todayCheckOuts();
+			$data['revenueComparison']     = $this->home_model->revenueComparison();
+			$data['topRoomTypes']          = $this->home_model->topRoomTypes();
+			$data['recentActivities']      = $this->home_model->recentActivities();
+		}
+
+		// Restaurant / Order Management Permissions
+		$order_read = $this->permission->method('ordermanage', 'read')->access();
+		if ($order_read) {
+			// Restaurant Order Statistics
+			$data['todayRestaurantOrders'] = $this->home_model->todayRestaurantOrders();
+			$data['todayRestaurantOrdersAll'] = $this->home_model->todayRestaurantOrdersAll(); // Active + Pending + Paid
+			$data['todayPaidRestaurantRevenue'] = $this->home_model->todayPaidRestaurantRevenue(); // Only paid orders
+			$data['pendingRestaurantOrders'] = $this->home_model->pendingRestaurantOrders();
+			$data['todayRestaurantRevenue'] = $this->home_model->todayRestaurantRevenue();
+			$data['totalRestaurantOrders'] = $this->home_model->totalRestaurantOrders();
+			$data['totalRestaurantRevenue'] = $this->home_model->totalRestaurantRevenue();
+			$data['processingRestaurantOrders'] = $this->home_model->processingRestaurantOrders();
+			$data['readyRestaurantOrders'] = $this->home_model->readyRestaurantOrders();
+			$data['recentRestaurantOrders'] = $this->home_model->recentRestaurantOrders(5);
+			$data['currentMonthRestaurantRevenue'] = $this->home_model->currentMonthRestaurantRevenue();
+			$data['currentMonthRestaurantOrders'] = $this->home_model->currentMonthRestaurantOrders();
+
+			// Food and Beverage Reports
+			$data['topSellingFoodItems'] = $this->home_model->topSellingFoodItems(10);
+			$data['topSellingBeverageItems'] = $this->home_model->topSellingBeverageItems(10);
+			$data['topSellingItems'] = $this->home_model->topSellingItems(10); // Fallback if menutype not set
+			$data['todayFoodRevenue'] = $this->home_model->todayFoodRevenue();
+			$data['todayBeverageRevenue'] = $this->home_model->todayBeverageRevenue();
+			$data['todayPaidFoodRevenue'] = $this->home_model->todayPaidFoodRevenue();
+			$data['todayPaidBeverageRevenue'] = $this->home_model->todayPaidBeverageRevenue();
+			$data['currentMonthFoodRevenue'] = $this->home_model->currentMonthFoodRevenue();
+			$data['currentMonthBeverageRevenue'] = $this->home_model->currentMonthBeverageRevenue();
+			$data['totalFoodRevenue'] = $this->home_model->totalFoodRevenue();
+			$data['totalBeverageRevenue'] = $this->home_model->totalBeverageRevenue();
+			$data['categoryWiseSales'] = $this->home_model->categoryWiseSales(10);
+			$data['foodBeverageComparisonToday'] = $this->home_model->foodBeverageComparisonToday();
+		}
+
+		// Accounts / Payments Permissions
+		if ($this->permission->method('accounts', 'read')->access()) {
+			// Payment Categories Analytics
+			$data['categorizedPayments'] = $this->home_model->getCategorizedPayments();
+		}
 
 		// Load currency settings for dynamic currency display
 		$data['currency'] = getCurrency();

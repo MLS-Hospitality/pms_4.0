@@ -38,6 +38,46 @@
                     </div>
                 </div>
                 <div class="form-group row">
+                    <label for="fathername" class="col-sm-2 col-form-label"><?php echo display('father_name') ?></label>
+                    <div class="col-sm-4">
+                        <input name="fathername" autocomplete="off" class="form-control" type="text" placeholder="<?php echo display('father_name') ?>" id="fathername" value="">
+                    </div>
+                    <label for="anniversary" class="col-sm-2 col-form-label"><?php echo display('anniversary') ?></label>
+                    <div class="col-sm-4">
+                        <input name="anniversary" autocomplete="off" class="form-control" type="text" placeholder="<?php echo display('anniversary') ?>" id="anniversary" value="">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="city" class="col-sm-2 col-form-label"><?php echo display('city') ?></label>
+                    <div class="col-sm-4">
+                        <input name="city" autocomplete="off" class="form-control" type="text" placeholder="<?php echo display('city') ?>" id="city" value="">
+                    </div>
+                    <label for="gender" class="col-sm-2 col-form-label"><?php echo display('gender') ?></label>
+                    <div class="col-sm-4">
+                        <input name="gender" autocomplete="off" class="form-control" type="text" placeholder="<?php echo display('gender') ?>" id="gender" value="">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="contacttype" class="col-sm-2 col-form-label"><?php echo display('contact_type') ?></label>
+                    <div class="col-sm-4">
+                        <input name="contacttype" autocomplete="off" class="form-control" type="text" placeholder="<?php echo display('contact_type') ?>" id="contacttype" value="">
+                    </div>
+                    <label for="country" class="col-sm-2 col-form-label"><?php echo display('country') ?></label>
+                    <div class="col-sm-4">
+                        <input name="country" autocomplete="off" class="form-control" type="text" placeholder="<?php echo display('country') ?>" id="country" value="">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="zipcode" class="col-sm-2 col-form-label"><?php echo display('zipcode') ?></label>
+                    <div class="col-sm-4">
+                        <input name="zipcode" autocomplete="off" class="form-control" type="text" placeholder="<?php echo display('zipcode') ?>" id="zipcode" value="">
+                    </div>
+                    <label for="pitype" class="col-sm-2 col-form-label"><?php echo "Photo Identity Type" ?></label>
+                    <div class="col-sm-4">
+                        <input name="pitype" autocomplete="off" class="form-control" type="text" placeholder="<?php echo "Photo Identity Type" ?>" id="pitype" value="">
+                    </div>
+                </div>
+                <div class="form-group row">
                     <label for="phone" class="col-sm-2 col-form-label"><?php echo display('nationality') ?> <span class="text-danger">*</span> </label>
                     <div class="col-sm-4 radioheightalign">
                         <div class="form-check form-check-inline">

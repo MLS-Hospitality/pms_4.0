@@ -17,7 +17,18 @@ function checkdshift(id) {
         success: function(data) {
             $('#emp_startroster_time').val(data.shift_start).trigger('change');
             $('#emp_endroster_time').val(data.shift_end).trigger('change');
-
+            
+            var start_date = $('#emp_startroster_date').val();
+            var end_date = start_date;
+            if (data.shift_end < data.shift_start) {
+                var date = new Date(start_date);
+                date.setDate(date.getDate() + 1);
+                var yr = date.getFullYear();
+                var month = (date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1);
+                var day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+                end_date = yr + '-' + month + '-' + day;
+            }
+            $('#emp_endroster_date').val(end_date);
         }
     });
 

@@ -68,6 +68,15 @@ class Customer_info extends MX_Controller
 			$this->form_validation->set_rules('purpose', display('purpose'), 'required|xss_clean');
 		}
 		$this->form_validation->set_rules('address', display('address'), 'xss_clean');
+		$this->form_validation->set_rules('fathername', display('father_name'), 'xss_clean');
+		$this->form_validation->set_rules('anniversary', display('anniversary'), 'xss_clean');
+		$this->form_validation->set_rules('city', display('city'), 'xss_clean');
+		$this->form_validation->set_rules('gender', display('gender'), 'xss_clean');
+		$this->form_validation->set_rules('contacttype', display('contact_type'), 'xss_clean');
+		$this->form_validation->set_rules('country', display('country'), 'xss_clean');
+		$this->form_validation->set_rules('zipcode', display('zipcode'), 'xss_clean');
+		$this->form_validation->set_rules('pitype', "Photo Identity Type", 'xss_clean');
+		$this->form_validation->set_rules('pid', "Photo Identity", 'xss_clean');
 		$saveid = $this->session->userdata('id');
 		$this->input->post('discount', true);
 
@@ -98,12 +107,20 @@ class Customer_info extends MX_Controller
 					'dob' 	             		=> $this->input->post('dob', TRUE),
 					'profession' 	         	=> $this->input->post('profession', TRUE),
 					'isnationality' 	         	=> $this->input->post('nationaliti', TRUE),
-					'pid' 	         		    => $this->input->post('national_id', TRUE),
+					'pid' 	         		    => $this->input->post('pid', TRUE) ? $this->input->post('pid', TRUE) : $this->input->post('national_id', TRUE),
 					'nationality' 	         	=> $this->input->post('nationalitycon', TRUE),
 					'passport' 	         		=> $this->input->post('passport_no', TRUE),
 					'visano' 	         		=> $this->input->post('visa_reg_no', TRUE),
 					'purpose' 	         		=> $this->input->post('purpose', TRUE),
 					'address' 	         		=> $this->input->post('address', TRUE),
+					'fathername' 	         	=> $this->input->post('fathername', TRUE),
+					'anniversary' 	         	=> $this->input->post('anniversary', TRUE),
+					'city' 	         		=> $this->input->post('city', TRUE),
+					'gender' 	         		=> $this->input->post('gender', TRUE),
+					'contacttype' 	         	=> $this->input->post('contacttype', TRUE),
+					'country' 	         		=> $this->input->post('country', TRUE),
+					'zipcode' 	         		=> $this->input->post('zipcode', TRUE),
+					'pitype' 	         		=> $this->input->post('pitype', TRUE),
 					'signupdate'					=> date('Y-m-d')
 				);
 				$this->db->insert('customerinfo', $postData);
@@ -135,12 +152,20 @@ class Customer_info extends MX_Controller
 					'dob' 	             		=> $this->input->post('dob', TRUE),
 					'profession' 	         	=> $this->input->post('profession', TRUE),
 					'isnationality' 	         	=> $this->input->post('nationaliti', TRUE),
-					'pid' 	         		    => $this->input->post('national_id', TRUE),
+					'pid' 	         		    => $this->input->post('pid', TRUE) ? $this->input->post('pid', TRUE) : $this->input->post('national_id', TRUE),
 					'nationality' 	         	=> $this->input->post('nationalitycon', TRUE),
 					'passport' 	         		=> $this->input->post('passport_no', TRUE),
 					'visano' 	         		=> $this->input->post('visa_reg_no', TRUE),
 					'purpose' 	         		=> $this->input->post('purpose', TRUE),
 					'address' 	         		=> $this->input->post('address', TRUE),
+					'fathername' 	         	=> $this->input->post('fathername', TRUE),
+					'anniversary' 	         	=> $this->input->post('anniversary', TRUE),
+					'city' 	         		=> $this->input->post('city', TRUE),
+					'gender' 	         		=> $this->input->post('gender', TRUE),
+					'contacttype' 	         	=> $this->input->post('contacttype', TRUE),
+					'country' 	         		=> $this->input->post('country', TRUE),
+					'zipcode' 	         		=> $this->input->post('zipcode', TRUE),
+					'pitype' 	         		=> $this->input->post('pitype', TRUE),
 					'signupdate'					=>	date('Y-m-d')
 				);
 
@@ -319,7 +344,7 @@ class Customer_info extends MX_Controller
 					'balance'     	    		=> $balance,
 				);
 			}
-			if ($this->input->post('hallroom', TRUE) == "1" | (!empty($postData3) ?? $this->customer_model->update($postData3))) {
+			if ($this->input->post('hallroom', TRUE) == "1" || (!empty($postData3) && $this->customer_model->update($postData3))) {
 				//Account transcation customer payment
 				if ($this->input->post('hallroom', TRUE) != "1") {
 					$invoice_no = $bookedid;
@@ -353,8 +378,8 @@ class Customer_info extends MX_Controller
 						}
 						if (!empty($bsource)) {
 							$oldcomission = $this->db->select("balance,due_amount")->from("tbl_booking_type_info")->where("booking_source", $bsource)->get()->row();
-							$balance = $oldcomission->balance - $commission;
-							$due_amount = $oldcomission->due_amount - $commission;
+							$balance = $oldcomission->balance - $comission;
+							$due_amount = $oldcomission->due_amount - $comission;
 							$this->db->where("booking_source", $bsource)->update("tbl_booking_type_info", array("balance" => $balance, "due_amount" => $due_amount));
 						}
 					}
@@ -415,8 +440,13 @@ class Customer_info extends MX_Controller
 		$this->form_validation->set_rules('guestname', "Guest Name", 'required|xss_clean');
 		if ($this->form_validation->run()) {
 			$data['customer']   = (object) $postData3 = array(
-				'otherguest_id'     	        => $this->input->post('guestid', TRUE),
-				'guestname'     	        => $this->input->post('guestname', TRUE),
+				'otherguest_id'     	=> $this->input->post('guestid', TRUE),
+				'guestname'     	    => $this->input->post('guestname', TRUE),
+				'gender'     	        => $this->input->post('gender', TRUE),
+				'mobile'     	        => $this->input->post('mobile', TRUE),
+				'email'     	        => $this->input->post('email', TRUE),
+				'photo_id_type'     	=> $this->input->post('photo_id_type', TRUE),
+				'photo_id'     	        => $this->input->post('photo_id', TRUE),
 			);
 			if ($this->customer_model->guestupdate($postData3)) {
 				$this->session->set_flashdata('message', display('update_successfully'));
@@ -767,6 +797,7 @@ class Customer_info extends MX_Controller
 		$this->permission->method('customer', 'read')->redirect();
 		$data['title']    = display('customer_list');
 		$data["intinfo"] = $this->customer_model->detailsInformation($id);
+		$data['stayhistory'] = $this->customer_model->stayHistory($id);
 		$data['module'] = "customer";
 		$data['page']   = "customerDetails";
 		echo Modules::run('template/layout', $data);

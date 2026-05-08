@@ -457,8 +457,7 @@ $fullname = $this->session->userdata('fullname');
             // module name
             $HmvcMenu2["payment_setting"] = array(
                 //set icon
-                "icon"           => "<i class='ti-money'></i>
-                ",
+                "icon"           => "<i class='ti-money'></i>",
                 //group level name
                 "paymentmethod_list" => array(
                     //menu name
@@ -486,8 +485,7 @@ $fullname = $this->session->userdata('fullname');
             // module name
             $HmvcMenu2["purchase"] = array(
                 //set icon
-                "icon"           => "<i class='ti-shopping-cart' aria-hidden='true'></i>
-                ",
+                "icon"           => "<i class='ti-shopping-cart' aria-hidden='true'></i>",
 
                 "purchase_item" => array(
                     "controller" => "purchase",
@@ -517,8 +515,7 @@ $fullname = $this->session->userdata('fullname');
             // module name
             $HmvcMenu2["reports"] = array(
                 //set icon
-                "icon"           => "<i class='ti-bar-chart' aria-hidden='true'></i>
-                ",
+                "icon"           => "<i class='ti-bar-chart' aria-hidden='true'></i>",
 
                 "booking_report" => array(
                     "controller" => "report",
@@ -543,8 +540,7 @@ $fullname = $this->session->userdata('fullname');
             // module name
             $HmvcMenu2["room_facilities"] = array(
                 //set icon
-                "icon"           => "<i class='ti-view-grid'></i>
-                ",
+                "icon"           => "<i class='ti-view-grid'></i>",
 
                 //group level name
                 "faciliti_list" => array(
@@ -575,8 +571,7 @@ $fullname = $this->session->userdata('fullname');
             // module name
             $HmvcMenu2["room_reservation"] = array(
                 //set icon
-                "icon"           => "<i class='ti-layout-slider-alt'></i>
-                ",
+                "icon"           => "<i class='ti-layout-slider-alt'></i>",
                 //group level name
                 "booking_list" => array(
                     //menu name
@@ -615,8 +610,7 @@ $fullname = $this->session->userdata('fullname');
             // module name
             $HmvcMenu2["ordermanage"] = array(
                 //set icon
-                "icon"           => "<i class='fab fa-first-order' aria-hidden='true'></i>
-                    ",
+                "icon"           => "<i class='fab fa-first-order' aria-hidden='true'></i>",
 
 
                 "pos_invoice"    => array(
@@ -791,8 +785,7 @@ $fullname = $this->session->userdata('fullname');
             // module name
             $HmvcMenu2["units"] = array(
                 //set icon
-                "icon"           => "<i class='ti-pin-alt' aria-hidden='true'></i>
-                ",
+                "icon"           => "<i class='ti-pin-alt' aria-hidden='true'></i>",
 
                 //group level name
                 "unit_list" => array(
@@ -840,8 +833,7 @@ $fullname = $this->session->userdata('fullname');
             );
             $HmvcMenu2["house_keeping"] = array(
                 //set icon
-                "icon"           => "<i class='ti-brush'></i>
-                ",
+                "icon"           => "<i class='ti-brush'></i>",
                 //group level name
                 "assign_room_cleaning" => array(
                     //menu name
@@ -928,8 +920,7 @@ $fullname = $this->session->userdata('fullname');
             );
             $HmvcMenu2["pool_booking"] = array(
                 //set icon
-                "icon"           => "<i class='typcn typcn-waves'></i>
-                ",
+                "icon"           => "<i class='typcn typcn-waves'></i>",
                 //group level name
 
                 "pool_booking_list" => array(
@@ -968,8 +959,7 @@ $fullname = $this->session->userdata('fullname');
             );
             $HmvcMenu2["duty_roster"] = array(
                 //set icon
-                "icon"           => "<i class='ti-calendar' ></i>
-                ",
+                "icon"           => "<i class='ti-calendar' ></i>",
                 //group level name
 
                 'attendance_dashboard'    => array(
@@ -1001,8 +991,7 @@ $fullname = $this->session->userdata('fullname');
             // module name
             $HmvcMenu2["transport_facility"] = array(
                 //set icon
-                "icon"           => "<i class='ti-car'></i>
-                ",
+                "icon"           => "<i class='ti-car'></i>",
                 //group level name 
 
                 "flight_details_list" => array(
@@ -1034,8 +1023,7 @@ $fullname = $this->session->userdata('fullname');
             );
             $HmvcMenu2["room_setting"] = array(
                 //set icon
-                "icon"           => "<i class='typcn typcn-spanner'></i>
-                ",
+                "icon"           => "<i class='typcn typcn-spanner'></i>",
                 //group level name
                 "bed_list" => array(
                     //menu name
@@ -1101,11 +1089,18 @@ $fullname = $this->session->userdata('fullname');
                     "permission" => "read"
 
                 ),
+                "assign_room" => array(
+                    //menu name
+                    "controller" => "room_details",
+                    "method"     => "roomassign",
+                    "url"        => "room_setting/assign-room",
+                    "permission" => "read"
+
+                ),
             );
             $HmvcMenu2["tax_management"] = array(
                 //set icon
-                "icon"           => "<i class='ti-receipt'></i>
-                ",
+                "icon"           => "<i class='ti-receipt'></i>",
                 //group level name
                 "tax_list" => array(
                     //menu name
@@ -1139,7 +1134,7 @@ $fullname = $this->session->userdata('fullname');
             ?>
             <li class="<?php echo (($this->uri->segment(1) == $moduleName) ? "mm-active" : null) ?>">
                 <a class="has-arrow material-ripple"
-                    href="#"><?php echo (($moduleData['icon'] != null) ? $moduleData['icon'] : null) ?><?php echo display($moduleName); ?></a>
+                    href="#"><?php echo (($moduleData['icon'] != null) ? $moduleData['icon'] : null) ?><span><?php echo display($moduleName) ? display($moduleName) : str_replace('_', ' ', $moduleName); ?></span></a>
                 <ul class="nav-second-level <?php echo (($this->uri->segment(1) == $moduleName) ? "mm-show" : null) ?>">
                     <?php foreach ($moduleData as $groupLabel => $label) {
                                 if ($groupLabel != 'icon')

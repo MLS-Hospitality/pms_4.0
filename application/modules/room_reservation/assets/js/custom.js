@@ -89,29 +89,13 @@ function initDatePicker(selector, customOptions = {}) {
 }
 
 /* ========================================
-   CUSTOMER DATA STORAGE + SAVE BUTTON CONTROL
+   CUSTOMER DATA STORAGE + UI RENDERING
 ======================================== */
 
-// Check if occupants already exists, if not, initialize it.
 window.occupants = window.occupants || [];
+window.editOccupantIndex = -1;
 
-function addCustomerToTable(customer) {
-    const row = `
-        <tr>
-            <td>${occupants.length + 1}</td>
-            <td>${customer.title || ''} ${customer.firstname} ${customer.lastname || ''}</td>
-            <td>${customer.mobileNo || ''}</td>
-            <td class="text-right pr-0">
-                <button type="button" class="btn btn-danger-soft btn-xs remove-occupant" data-index="${occupants.length}">
-                    <i class="far fa-trash-alt"></i>
-                </button>
-            </td>
-        </tr>`;
-
-    $(".customerdetail tbody").append(row);
-
-    // ────────────────────────────────────────────────
-    // Existing ones (keep them)
+function updateHiddenFields() {
     $("#alluser").val(occupants.map(c => c.firstname + ' ' + (c.lastname || '')).join(','));
     $("#allmobile").val(occupants.map(c => c.mobileNo || '').join(','));
     $("#allemail").val(occupants.map(c => c.email || '').join(','));
@@ -120,9 +104,6 @@ function addCustomerToTable(customer) {
     $("#allimgfront").val(occupants.map(c => c.imgffront || '').join(','));
     $("#allimgback").val(occupants.map(c => c.imgbback || '').join(','));
     $("#allimgguest").val(occupants.map(c => c.imggguest || '').join(','));
-
-    // ────────────────────────────────────────────────
-    // NEW — add these (the missing critical ones)
     $("#allstate").val(occupants.map(c => c.state || '').join(','));
     $("#allcountry").val(occupants.map(c => c.country || '').join(','));
     $("#allcity").val(occupants.map(c => c.city || '').join(','));
@@ -138,7 +119,29 @@ function addCustomerToTable(customer) {
     $("#alllastname").val(occupants.map(c => c.lastname || '').join(','));
     $("#allvip").val(occupants.map(c => c.vip || 'No').join(','));
     $("#allcomments").val(occupants.map(c => c.comments || '').join(','));
+}
 
+function renderCustomerTable() {
+    $(".customerdetail tbody").empty();
+    occupants.forEach((customer, index) => {
+        const row = `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${customer.title || ''} ${customer.firstname} ${customer.lastname || ''}</td>
+                <td>${customer.mobileNo || ''}</td>
+                <td class="text-right pr-0">
+                    <button type="button" class="btn btn-primary-soft btn-xs edit-occupant" data-index="${index}">
+                        <i class="far fa-edit"></i>
+                    </button>
+                    <button type="button" class="btn btn-danger-soft btn-xs remove-occupant" data-index="${index}">
+                        <i class="far fa-trash-alt"></i>
+                    </button>
+                </td>
+            </tr>`;
+        $(".customerdetail tbody").append(row);
+    });
+
+    updateHiddenFields();
     toggleSaveButton();
 }
 
@@ -283,8 +286,19 @@ $(document).ready(function () {
             return;
         }
 
-        occupants.push(customer);
-        addCustomerToTable(customer);
+        if (window.editOccupantIndex > -1) {
+            // Update existing
+            occupants[window.editOccupantIndex] = customer;
+            window.editOccupantIndex = -1;
+            $("#addcustomer").text("Add Customer");
+            swal("Success", "Customer updated successfully.", "success");
+        } else {
+            // Add new
+            occupants.push(customer);
+            swal("Success", "Customer added successfully.", "success");
+        }
+        
+        renderCustomerTable();
 
         $('#exampleModal input, #exampleModal select, #exampleModal textarea').val('');
         $('#exampleModal input[type="checkbox"]').prop('checked', false);
@@ -292,57 +306,90 @@ $(document).ready(function () {
         $('#exampleModal .filename').html('Drag and drop');
 
         $('#exampleModal').modal('hide');
+    });
 
+    $("#addoldcustomer").on("click", function () {
+        const customer = {
+            firstname: $("#existname").val().trim(),
+            mobileNo: $("#existmobile").val().trim(),
+            customerid: $("#existcustid").val()
+        };
+
+        if (!customer.firstname || !customer.mobileNo) {
+            swal("Error", "Name and mobile number are required.", "error");
+            return;
+        }
+
+        occupants.push(customer);
+        renderCustomerTable();
+
+        $("#existname").val("");
+        $("#existmobile").val("");
+        $("#existcustid").val("");
+        $("#existmobile").removeClass("is-valid is-invalid");
+        $("#existname").removeClass("is-valid is-invalid");
+
+        $('#exampleModal2').modal('hide');
         swal("Success", "Customer added successfully.", "success");
     });
 
-   $(document).on("click", ".remove-occupant", function () {
-    const index = $(this).data('index');
+    $(document).on("click", ".edit-occupant", function () {
+        const index = $(this).data('index');
+        const customer = occupants[index];
+        window.editOccupantIndex = index;
 
-    // Remove the occupant from the array
-    occupants.splice(index, 1);
+        // Fill modal fields
+        $("#title").val(customer.title);
+        $("#firstname").val(customer.firstname);
+        $("#lastname").val(customer.lastname);
+        $("#fathername").val(customer.fathername);
+        $("#mobileNo").val(customer.mobileNo);
+        $("#email").val(customer.email);
+        $("#nationality").val(customer.nationality);
+        $("#country").val(customer.country).trigger('change');
+        $("#code").val(customer.country_code);
+        $("#occupation").val(customer.occupation);
+        $("#dob").val(customer.dob);
+        $("#anniversary").val(customer.anniversary);
+        $("#contacttype").val(customer.contacttype);
+        $("#address").val(customer.address);
+        $("#city").val(customer.city);
+        $("#zipcode").val(customer.zipcode);
+        $("#comments").val(customer.comments);
 
-    // Remove the row from the table
-    $(this).closest("tr").remove();
+        if (customer.gender === 'male') $("#male").prop('checked', true);
+        else if (customer.gender === 'female') $("#female").prop('checked', true);
 
-    // Re-index the remaining rows (SL numbers and data-index)
-    $(".customerdetail tbody tr").each(function (i) {
-        $(this).find("td:first").text(i + 1);
-        $(this).find(".remove-occupant").data('index', i);
+        $("#vip").prop('checked', customer.vip === 'Yes');
+
+        // Handle images
+        $("#imgffront").val(customer.imgffront);
+        $("#imgbback").val(customer.imgbback);
+        $("#imggguest").val(customer.imggguest);
+
+        // Update state after country trigger
+        setTimeout(() => {
+            $("#state").val(customer.state).trigger('change');
+        }, 100);
+
+        $("#addcustomer").text("Update Customer");
+        $('#exampleModal').modal('show');
     });
 
-    // ────────────────────────────────────────────────
-    // Update ALL relevant hidden fields (same as in addCustomerToTable)
-    $("#alluser").val(occupants.map(c => c.firstname + ' ' + (c.lastname || '')).join(','));
-    $("#allmobile").val(occupants.map(c => c.mobileNo || '').join(','));
-    $("#allemail").val(occupants.map(c => c.email || '').join(','));
-    $("#allnationality").val(occupants.map(c => c.nationality || '').join(','));
-    $("#alldob").val(occupants.map(c => c.dob || '').join(','));
-    $("#allimgfront").val(occupants.map(c => c.imgffront || '').join(','));
-    $("#allimgback").val(occupants.map(c => c.imgbback || '').join(','));
-    $("#allimgguest").val(occupants.map(c => c.imggguest || '').join(','));
+    // Reset update mode when modal is hidden
+    $('#exampleModal').on('hidden.bs.modal', function () {
+        if (window.editOccupantIndex === -1) {
+            $("#addcustomer").text("Add Customer");
+        }
+    });
 
-    // ────────────────────────────────────────────────
-    // Missing fields — now added
-    $("#allstate").val(occupants.map(c => c.state || '').join(','));
-    $("#allcountry").val(occupants.map(c => c.country || '').join(','));
-    $("#allcity").val(occupants.map(c => c.city || '').join(','));
-    $("#allzipcode").val(occupants.map(c => c.zipcode || '').join(','));
-    $("#alladdress").val(occupants.map(c => c.address || '').join(','));
-    $("#allcontacttype").val(occupants.map(c => c.contacttype || '').join(','));
-    $("#allgender").val(occupants.map(c => c.gender || '').join(','));
-    $("#allfather").val(occupants.map(c => c.fathername || '').join(','));
-    $("#allpitype").val(occupants.map(c => c.pitype || '').join(','));
-    $("#allpid").val(occupants.map(c => c.pid || '').join(','));
-    $("#allanniversary").val(occupants.map(c => c.anniversary || '').join(','));
-    $("#alloccupation").val(occupants.map(c => c.occupation || '').join(','));
-    $("#alllastname").val(occupants.map(c => c.lastname || '').join(','));
-    $("#allvip").val(occupants.map(c => c.vip || 'No').join(','));
-    $("#allcomments").val(occupants.map(c => c.comments || '').join(','));
-
-    // Enable/disable save button based on whether there are occupants left
-    toggleSaveButton();
-});
+   $(document).on("click", ".remove-occupant", function () {
+        const index = $(this).data('index');
+        occupants.splice(index, 1);
+        renderCustomerTable();
+        updateHiddenFields();
+        toggleSaveButton();
+    });
 
     // Initial check
     toggleSaveButton();

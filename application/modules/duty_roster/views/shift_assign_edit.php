@@ -42,7 +42,7 @@
                                     $chechedemp = $this->db->select('emp_id,roster_id')
                                     ->from('tbl_emproster_assign')
                                     ->where('emp_startroster_date >=', $query->roster_start)
-                                    ->where('emp_endroster_date <=', $query->roster_end)
+                                    ->where('emp_startroster_date <=', $query->roster_end)
                                     ->group_by('emp_id')->get()->result(); 
 
                                 if(!empty($editemp_list)){

@@ -107,7 +107,11 @@ public function create_shift()
 
         $shift_start2 =  $this->input->post('shift_start2',TRUE);
         $shift_id   =  $this->input->post('shift_id',TRUE);
-        $condi1 = "'".$shift_start2."' BETWEEN cast(shift_start AS Time) AND cast(shift_end AS Time)";
+        $condi1 = "(
+            (cast(shift_start AS Time) < cast(shift_end AS Time) AND '$shift_start2' BETWEEN cast(shift_start AS Time) AND cast(shift_end AS Time)) 
+            OR 
+            (cast(shift_start AS Time) >= cast(shift_end AS Time) AND ('$shift_start2' >= cast(shift_start AS Time) OR '$shift_start2' <= cast(shift_end AS Time)))
+        )";
         $this->db->select('*');
         $this->db->from('tbl_empwork_shift');
         $this->db->where_not_in('shiftid', $shift_id);
@@ -121,7 +125,11 @@ public function create_shift()
 
         $shift_end2 =  $this->input->post('shift_end2',TRUE);
         $shift_id   =  $this->input->post('shift_id',TRUE);
-        $condi1 = "'".$shift_end2."' BETWEEN cast(shift_start AS Time) AND cast(shift_end AS Time)";
+        $condi1 = "(
+            (cast(shift_start AS Time) < cast(shift_end AS Time) AND '$shift_end2' BETWEEN cast(shift_start AS Time) AND cast(shift_end AS Time)) 
+            OR 
+            (cast(shift_start AS Time) >= cast(shift_end AS Time) AND ('$shift_end2' >= cast(shift_start AS Time) OR '$shift_end2' <= cast(shift_end AS Time)))
+        )";
         $this->db->select('*');
         $this->db->from('tbl_empwork_shift');
         $this->db->where_not_in('shiftid', $shift_id);
@@ -133,76 +141,67 @@ public function create_shift()
     }
 
     public function check_inshiftedit(){
-
         $shift_start =  $this->input->post('shift_start',TRUE);
         $shift_end   =  $this->input->post('shift_end',TRUE);
-        $shift_id   =  $this->input->post('shift_id',TRUE);
-        $this->db->select('*');
-        $this->db->from('tbl_empwork_shift');
-        $this->db->where_not_in('shiftid', $shift_id);
-        $this->db->where('cast(shift_start AS Time) >=', $shift_start);
-        $this->db->where('cast(shift_end AS Time) <=', $shift_end);
-        $query=$this->db->get()->result();
-        
+        $shift_id    =  $this->input->post('shift_id',TRUE);
+        $query = $this->db->select('*')
+            ->from('tbl_empwork_shift')
+            ->where('shift_start', $shift_start)
+            ->where('shift_end', $shift_end)
+            ->where_not_in('shiftid', $shift_id)
+            ->get()
+            ->result();
         if(!empty($query)){
             echo 1;
-            
+        }else {
+            echo 2;
         }
-        
     }
 
     public function chkduplicateshift(){
-
         $shift_start =  $this->input->post('shift_start',TRUE);
         $shift_end   =  $this->input->post('shift_end',TRUE);
-        $condi1 = "'".$shift_start."' BETWEEN cast(shift_start AS Time) AND cast(shift_end AS Time)";
-        $this->db->select('*');
-        $this->db->from('tbl_empwork_shift');
-        $this->db->where($condi1);
-        $query=$this->db->get()->result();
+        $query = $this->db->select('*')
+            ->from('tbl_empwork_shift')
+            ->where('shift_start', $shift_start)
+            ->where('shift_end', $shift_end)
+            ->get()
+            ->result();
         if(!empty($query)){
             echo 1;
         }else {
             echo 2;
         }
-        
     }
     public function chkduplicateshift2(){
-
         $shift_start =  $this->input->post('shift_start',TRUE);
         $shift_end   =  $this->input->post('shift_end',TRUE);
-        $condi1 = "'".$shift_end."' BETWEEN cast(shift_start AS Time) AND cast(shift_end AS Time)";
-        $this->db->select('*');
-        $this->db->from('tbl_empwork_shift');
-        $this->db->where($condi1);
-        $query=$this->db->get()->result();
-        
+        $query = $this->db->select('*')
+            ->from('tbl_empwork_shift')
+            ->where('shift_start', $shift_start)
+            ->where('shift_end', $shift_end)
+            ->get()
+            ->result();
         if(!empty($query)){
             echo 1;
-            
         }else {
             echo 2;
         }
-        
     }
     public function check_inshift(){
-
-        $shift_start =  $this->input->post('shift_start',TRUE);
-        $shift_end   =  $this->input->post('shift_end',TRUE);
-        
-        $this->db->select('*');
-        $this->db->from('tbl_empwork_shift');
-        $this->db->where('cast(shift_start AS Time) >=', $shift_start);
-        $this->db->where('cast(shift_end AS Time) <=', $shift_end);
-        $query=$this->db->get()->result();
-        
+        $shift_start  = $this->input->post('shift_start',TRUE);
+        $shift_end    = $this->input->post('shift_end',TRUE);
+        $query = $this->db->select('*')
+            ->from('tbl_empwork_shift')
+            ->where('shift_start', $shift_start)
+            ->where('shift_end', $shift_end)
+            ->get()
+            ->result();
         if(!empty($query)){
             echo 1;
-            
         }else {
             echo 2;
         }
-        
     }
 
     public function roster_list()
@@ -496,15 +495,17 @@ public function create_roster()
                 for ($currentDate = $firstdate; $currentDate <= $lastdate; $currentDate += (86400)) {
                                                 
                     $perdate = date('Y-m-d', $currentDate);
+                    $enddate = $perdate;
+                    if (strtotime($rstr_end_time) < strtotime($rstr_start_time)) {
+                        $enddate = date('Y-m-d', $currentDate + 86400);
+                    }
                     $data3 = array(
                         'roster_id'		        =>$roster_id,
                         'emp_id'		        =>$emp_idinp,
                         'emp_startroster_date'  =>$perdate,
-                        'emp_endroster_date'    =>$perdate,
+                        'emp_endroster_date'    =>$enddate,
                         'emp_startroster_time'  =>$rstr_start_time,
                         'emp_endroster_time'    =>$rstr_end_time,
-                       
-                        
                     );
                     
                     $this->Shift_model->shift_assign_create($data3);
@@ -576,11 +577,15 @@ public function create_roster()
             for ($currentDate = strtotime(date("Y-m-d")); $currentDate <= $lastdate; $currentDate += (86400)) {
                                                 
                 $perdate = date('Y-m-d', $currentDate);
+                $enddate = $perdate;
+                if (strtotime($rstr_end_time) < strtotime($rstr_start_time)) {
+                    $enddate = date('Y-m-d', $currentDate + 86400);
+                }
                 $data3 = array(
                     'roster_id'		        =>$roster_id,
                     'emp_id'		        =>$emp_id,
                     'emp_startroster_date'  =>$perdate,
-                    'emp_endroster_date'    =>$perdate,
+                    'emp_endroster_date'    =>$enddate,
                     'emp_startroster_time'  =>$rstr_start_time,
                     'emp_endroster_time'    =>$rstr_end_time,
                 );
@@ -592,11 +597,15 @@ public function create_roster()
         else {
             for ($currentDate = $firstdate; $currentDate <= $lastdate; $currentDate += (86400)) {                            
                 $perdate = date('Y-m-d', $currentDate);
+                $enddate = $perdate;
+                if (strtotime($rstr_end_time) < strtotime($rstr_start_time)) {
+                    $enddate = date('Y-m-d', $currentDate + 86400);
+                }
                 $data3 = array(
                     'roster_id'		        =>$roster_id,
                     'emp_id'		        =>$emp_id,
                     'emp_startroster_date'  =>$perdate,
-                    'emp_endroster_date'    =>$perdate,
+                    'emp_endroster_date'    =>$enddate,
                     'emp_startroster_time'  =>$rstr_start_time,
                     'emp_endroster_time'    =>$rstr_end_time,  
                 );
@@ -661,15 +670,17 @@ public function create_roster()
                 for ($currentDate = $firstdate; $currentDate <= $lastdate; $currentDate += (86400)) {
                                                 
                     $perdate = date('Y-m-d', $currentDate);
+                    $enddate = $perdate;
+                    if (strtotime($rstr_end_time) < strtotime($rstr_start_time)) {
+                        $enddate = date('Y-m-d', $currentDate + 86400);
+                    }
                     $data3 = array(
                         'roster_id'		        =>	$roster_id,
                         'emp_id'		        =>	$emp_idinp,
                         'emp_startroster_date'  =>$perdate,
-                        'emp_endroster_date'    =>$perdate,
+                        'emp_endroster_date'    =>$enddate,
                         'emp_startroster_time'  =>$rstr_start_time,
                         'emp_endroster_time'    =>$rstr_end_time,
-                       
-                        
                     );
                     
                     $this->Shift_model->shift_assign_create($data3);

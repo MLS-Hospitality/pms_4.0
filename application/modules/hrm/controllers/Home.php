@@ -18,6 +18,7 @@ class Home extends MX_Controller
         $data['title']            = display('attendance');;
         $data['addressbook']      = $this->Csv_model->get_addressbook();
         $data['dropdownatn']      = $this->Csv_model->Employeename();
+        $data['timezone']         = $this->db->select('timezone')->from('setting')->get()->row();
         $data['module']           = "hrm";
         $data['page']             = "atnview";
         echo Modules::run('template/layout', $data);
@@ -62,6 +63,31 @@ class Home extends MX_Controller
                         'staytime'  => $row['staytime'],
                     );
                     $this->Csv_model->insert_csv($insert_data);
+
+                    // Update Duty Roster status if module exists
+                    $emp_id = $row['employee_id'];
+                    $date = $row['date'];
+                    $sin_time = date("H:i", strtotime($row['sign_in']));
+
+                    $path = 'application/modules/';
+                    $map = directory_map($path);
+                    $modnames = array();
+                    if (is_array($map) && sizeof($map) > 0) {
+                        $modnames = array_filter(array_keys($map));
+                        $modnames = preg_replace('/\W/', '', $modnames);
+                    }
+
+                    if (in_array("duty_roster", $modnames) === true && $this->db->table_exists('tbl_emproster_assign')) {
+                        $is_complete = array('is_complete' => 1);
+                        $this->db->where('emp_startroster_date', $date);
+                        $this->db->where('emp_id', $emp_id);
+                        $this->db->where("(
+                            (CAST(emp_startroster_time AS TIME) < CAST(emp_endroster_time AS TIME) AND '$sin_time' BETWEEN CAST(emp_startroster_time AS TIME) AND CAST(emp_endroster_time AS TIME)) 
+                            OR 
+                            (CAST(emp_startroster_time AS TIME) >= CAST(emp_endroster_time AS TIME) AND ('$sin_time' >= CAST(emp_startroster_time AS TIME) OR '$sin_time' <= CAST(emp_endroster_time AS TIME)))
+                        )", null, false);
+                        $this->db->update("tbl_emproster_assign", $is_complete);
+                    }
                 }
                 $this->session->set_flashdata('success', 'Csv Data Imported Succesfully');
 
@@ -104,13 +130,17 @@ class Home extends MX_Controller
             $modnames = array_filter(array_keys($map));
             $modnames = preg_replace('/\W/', '', $modnames);
         }
+
         if (in_array("duty_roster", $modnames) === true && $this->db->table_exists('tbl_emproster_assign')) {
             $is_complete = array('is_complete' => 1);
-            $this->db->where('emp_startroster_date', $date)
-                ->where('CAST(emp_startroster_time AS TIME)<=', $sin_time)
-                ->where('CAST(emp_endroster_time AS TIME)>=', $sin_time)
-                ->where('emp_id', $emp_id)
-                ->update("tbl_emproster_assign", $is_complete);
+            $this->db->where('emp_startroster_date', $date);
+            $this->db->where('emp_id', $emp_id);
+            $this->db->where("(
+                (CAST(emp_startroster_time AS TIME) < CAST(emp_endroster_time AS TIME) AND '$sin_time' BETWEEN CAST(emp_startroster_time AS TIME) AND CAST(emp_endroster_time AS TIME)) 
+                OR 
+                (CAST(emp_startroster_time AS TIME) >= CAST(emp_endroster_time AS TIME) AND ('$sin_time' >= CAST(emp_startroster_time AS TIME) OR '$sin_time' <= CAST(emp_endroster_time AS TIME)))
+            )", null, false);
+            $this->db->update("tbl_emproster_assign", $is_complete);
         }
 
         if ($this->form_validation->run() === true) {
@@ -170,13 +200,27 @@ class Home extends MX_Controller
 
         if ($this->form_validation->run() === true) {
 
+            $sign_in = $this->input->post('sign_in', TRUE);
+            $sign_out = $this->input->post('sign_out', TRUE);
+            $staytime = $this->input->post('staytime', TRUE);
+
+            if (!empty($sign_in) && !empty($sign_out)) {
+                $in = new DateTime($sign_in);
+                $Out = new DateTime($sign_out);
+                if ($Out < $in) {
+                    $Out->modify('+1 day');
+                }
+                $interval = $in->diff($Out);
+                $staytime = $interval->format('%H:%I:%S');
+            }
+
             $postData = array(
                 'att_id'               => $this->input->post('att_id', TRUE),
-                'employee_id'              => $this->input->post('employee_id', TRUE),
+                'employee_id'          => $this->input->post('employee_id', TRUE),
                 'date'                 => $this->input->post('date', TRUE),
-                'sign_in'              => $this->input->post('sign_in', TRUE),
-                'sign_out'             => $this->input->post('sign_out', TRUE),
-                'staytime'             => $this->input->post('staytime', TRUE),
+                'sign_in'              => $sign_in,
+                'sign_out'             => $sign_out,
+                'staytime'             => $staytime,
             );
 
             if ($this->Csv_model->update_attn($postData)) {
@@ -201,6 +245,9 @@ class Home extends MX_Controller
         $sign_in  =  $this->input->post('sign_in', TRUE);
         $in = new DateTime($sign_in);
         $Out = new DateTime($sign_out);
+        if ($Out < $in) {
+            $Out->modify('+1 day');
+        }
         $interval = $in->diff($Out);
         $stay =  $interval->format('%H:%I:%S');
         $postData = array(
@@ -317,13 +364,27 @@ class Home extends MX_Controller
         $this->form_validation->set_rules('staytime', display('staytime'), 'xss_clean');
         if ($this->form_validation->run() === true) {
 
+            $sign_in = $this->input->post('sign_in', TRUE);
+            $sign_out = $this->input->post('sign_out', TRUE);
+            $staytime = $this->input->post('staytime', TRUE);
+
+            if (!empty($sign_in) && !empty($sign_out)) {
+                $in = new DateTime($sign_in);
+                $Out = new DateTime($sign_out);
+                if ($Out < $in) {
+                    $Out->modify('+1 day');
+                }
+                $interval = $in->diff($Out);
+                $staytime = $interval->format('%H:%I:%S');
+            }
+
             $postData = array(
                 'att_id'               => $this->input->post('att_id', TRUE),
                 'employee_id'          => $this->input->post('employee_id', TRUE),
                 'date'                 => $this->input->post('date', TRUE),
-                'sign_in'              => $this->input->post('sign_in', TRUE),
-                'sign_out'             => $this->input->post('sign_out', TRUE),
-                'staytime'             => $this->input->post('staytime', TRUE),
+                'sign_in'              => $sign_in,
+                'sign_out'             => $sign_out,
+                'staytime'             => $staytime,
             );
 
             if ($this->Csv_model->update_attn($postData)) {

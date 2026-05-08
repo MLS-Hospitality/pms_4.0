@@ -146,15 +146,11 @@ function startTime() {
   if (m < 10) {
     m = "0" + m;
   }
-  if (s < 10) {
-    s = s;
-  }
-
   // add a zero in front of numbers<10
   m = checkTime(m);
   s = checkTime(s);
   document.getElementById("clock").innerHTML = h + ":" + m + ":" + s + " " + ap;
-  t = setTimeout(function () {
+  var t = setTimeout(function () {
     startTime();
   }, 500);
 }

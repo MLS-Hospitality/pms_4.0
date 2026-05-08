@@ -111,7 +111,9 @@ function search($id,$start_date,$end_date)
         $this->db->select('e.*,p.employee_id,p.first_name,p.last_name');
         $this->db->from('emp_attendance e');
         $this->db->join('employee_history p','p.employee_id = e.employee_id','left');
-        $this->db->like('e.date', $date);
+        $this->db->where('e.date', $date);
+        $this->db->where("STR_TO_DATE(e.sign_in, '%h:%i:%s %p') >=", date("H:i:s", strtotime($start_time)));
+        $this->db->where("STR_TO_DATE(e.sign_in, '%h:%i:%s %p') <=", date("H:i:s", strtotime($end_time)));
         $query = $this->db->get();
         return $query->result();
         }

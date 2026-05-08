@@ -46,32 +46,22 @@
                          <?php $sl = 1; ?>
                          <?php foreach ($guestinfo as $type) { 
                          ?>
-                         <tr class="<?php echo ($sl & 1)?"odd gradeX":"even gradeC" ?>">
+                          <tr class="<?php echo ($sl & 1)?"odd gradeX":"even gradeC" ?>">
                              <td><?php echo $sl; ?></td>
                              <td><?php echo html_escape($type->booking_number); ?></td>
-                             <?php if(empty($type->customerid)){ ?>
                              <td><?php echo html_escape($type->guestname); ?></td>
                              <td><?php echo html_escape($type->gender); ?></td>
                              <td><?php echo html_escape($type->mobile); ?></td>
                              <td><?php echo html_escape($type->email); ?></td>
                              <td><?php echo html_escape($type->photo_id_type); ?></td>
                              <td><?php echo html_escape($type->photo_id); ?></td>
-                             <?php } else{ ?>
-                             <?php $guest = $this->db->select("*")->from("customerinfo")->where("customerid",$type->customerid)->get()->row(); ?>
-                             <td><?php echo html_escape($guest->firstname); ?></td>
-                             <td><?php echo html_escape($guest->gender); ?></td>
-                             <td><?php echo html_escape($guest->cust_phone); ?></td>
-                             <td><?php echo html_escape($guest->email); ?></td>
-                             <td><?php echo html_escape($guest->pitype); ?></td>
-                             <td><?php echo html_escape($guest->pid); ?></td>
-                             <?php } ?>
                              <td class="center">
                                  <?php if($this->permission->method('customer','update')->access()): ?>
                                  <input name="url" type="hidden"
                                      id="url_<?php echo html_escape($type->otherguest_id); ?>"
                                      value="<?php echo base_url("customer/customer_info/guestupdate") ?>" />
                                  <a onclick="editinfo('<?php echo html_escape($type->otherguest_id); ?>')"
-                                     class="btn btn-info btn-sm <?php if(!empty($type->customerid)){ echo "disabled"; }?>" data-toggle="tooltip" data-placement="left"
+                                     class="btn btn-info btn-sm" data-toggle="tooltip" data-placement="left"
                                      title="Update"><i class="ti-pencil-alt text-white" aria-hidden="true"></i></a>
                                  <?php endif; 
 										 if($this->permission->method('customer','delete')->access()): ?>

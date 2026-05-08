@@ -345,18 +345,23 @@ function editinforoom(id){
 			return parts[0] * 3600 + 
 			parts[1] * 60; 
 		}
-		var difference = Math.abs(toSeconds(leave_from1) - toSeconds(leave_to1));
-		var h= Math.floor(difference / 3600); 
-		var m = Math.floor((difference % 3600) / 60); 
-		if(isNaN(h) || isNaN(h)) {
+		var start_sec = toSeconds(leave_from1);
+		var end_sec = toSeconds(leave_to1);
+		if (end_sec <= start_sec) {
+			end_sec += 24 * 3600;
+		}
+		var difference = end_sec - start_sec;
+		var h = Math.floor(difference / 3600);
+		var m = Math.floor((difference % 3600) / 60);
+		if (isNaN(h) || isNaN(m)) {
 			h = '';
 			m = '';
-		}else{
-			h = h+':';
-			m = m;
+		} else {
+			h = (h < 10 ? '0' + h : h) + ':';
+			m = (m < 10 ? '0' + m : m);
 		}
 
-		$('#shifttimetotal').val(h+m);
+		$('#shifttimetotal').val(h + m);
 
 		if ($('#shift_start').val() !=''&& $('#shift_end').val() !=''&& $('#shifttimetotal').val() !=''&& $('#shift_name').val() !='') {
 			$(".submitshiftbtn").prop('disabled', false);
@@ -424,22 +429,9 @@ function editinforoom(id){
 		var csrf = $('#csrf_token').val();
 		var shift_start  = $('#shift_start').val();
 		var shift_end  = $('#shift_end').val();
-		if (shift_end !='') {
-			if (shift_start >= shift_end) {
-				$('#shift_start').val("");
-				$('#shift_end').val("");
-				$('#shifttimetotal').val("");
-				$("#shift_end").prop('disabled', true);
-				swal({
-					title: "Failed",
-					text: "Shift End Time Should Larger Then Start Time",
-					type: "warning",
-					confirmButtonColor: "#28a745",
-					confirmButtonText: "Ok",
-					closeOnConfirm: true
-				});
-			}
-		}
+		/* 24-hour shift allows start >= end if it spans midnight */
+		/* Removing the strict start < end check here */
+		
 		
 		$.ajax({
 			type: "POST",
@@ -487,20 +479,8 @@ function editinforoom(id){
 		var csrf = $('#csrf_token').val();
 		var shift_end  = $('#shift_end').val();
 		var shift_start  = $('#shift_start').val();
-		if (shift_start >= shift_end) {
-			$('#shift_start').val("");
-			$('#shift_end').val("");
-			$('#shifttimetotal').val("");
-			$("#shift_end").prop('disabled', true);
-			swal({
-				title: "Failed",
-				text: "Shift End Time Should Larger Then Start Time",
-				type: "warning",
-				confirmButtonColor: "#28a745",
-				confirmButtonText: "Ok",
-				closeOnConfirm: true
-			});
-		}
+		/* 24-hour shift allows start >= end if it spans midnight */
+		
 		
 		$.ajax({
 			type: "POST",

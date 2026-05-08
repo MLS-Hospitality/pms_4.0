@@ -32,10 +32,15 @@ class Permission
 	}
 
 
-	public function module($module = null)
+	public function module($module = null, $method = null)
 	{
 		$module = (($module!=null)?strtolower($module):$this->ci->uri->segment(1));
 		$this->module = $module;
+
+		if ($method != null) {
+			return $this->method($module, $method);
+		}
+
 		if ($this->checkModule($module)) {
 			$this->permission = true;
 		} else {
@@ -43,8 +48,6 @@ class Permission
 		} 
 		return $this; 
 	}
-
-
 
 	public function check_label($label = null)
 	{
@@ -194,6 +197,9 @@ class Permission
 
 			if (($permission!=null)) {
 				$permission = json_decode($permission, true);
+				if (!is_array($permission)) {
+					return false;
+				}
 
 				//module list
 				$modules = array_keys($permission);
@@ -245,6 +251,9 @@ class Permission
 			if (($permission!=null)) {
 
 			$permission = json_decode($permission, true);
+				if (!is_array($permission)) {
+					return false;
+				}
 				//module list
 				$labels = array_keys($permission);
 

@@ -41,7 +41,7 @@ class Auth_model extends CI_Model {
 			IF(SUM(module_permission.delete)>=1,1,0) AS 'delete'
 			")
 			->from('module_permission')
-			->join('module', 'module.id = module_permission.fk_module_id', 'full')
+			->join('module', 'module.id = module_permission.fk_module_id', 'left')
 			->where_in('module_permission.fk_role_id', $role_id)
 			->where('module.status', 1)
 			->group_by('module_permission.fk_module_id')
@@ -83,7 +83,7 @@ public function userPermission2($id = null)
 				sec_menu_item.module
 				")
 				->from('sec_role_permission')
-				->join('sec_menu_item', 'sec_menu_item.menu_id = sec_role_permission.menu_id', 'full')
+				->join('sec_menu_item', 'sec_menu_item.menu_id = sec_role_permission.menu_id', 'left')
 				->where_in('sec_role_permission.role_id', $role_id)
 				->group_by('sec_role_permission.menu_id')
 				->group_start()

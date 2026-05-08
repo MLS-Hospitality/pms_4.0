@@ -13,7 +13,11 @@
                 $rosterdate = $this->db->select("emp_startroster_date")->from('tbl_emproster_assign')->where('emp_startroster_date', $today)->get()->row();
                   
                 $dstart = $rosterdate->emp_startroster_date.' '.$shdata->shift_start;
-                $dend   = $rosterdate->emp_startroster_date.' '.$shdata->shift_end;
+                $end_date = $rosterdate->emp_startroster_date;
+                if (strtotime($shdata->shift_end) < strtotime($shdata->shift_start)) {
+                    $end_date = date('Y-m-d', strtotime($rosterdate->emp_startroster_date . ' +1 day'));
+                }
+                $dend   = $end_date.' '.$shdata->shift_end;
                 
                 $curent = DateTime::createFromFormat('Y-m-d H:i', $cr_time);
                 $start  = DateTime::createFromFormat('Y-m-d H:i', $dstart);

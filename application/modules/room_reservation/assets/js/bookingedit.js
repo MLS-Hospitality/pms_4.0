@@ -355,40 +355,43 @@ $(document).ready(function() {
         var newRow = $("<tr>");
         var cols = "";
 
+        var isEdit = (typeof editIndex !== 'undefined' && editIndex !== null);
+        var targetNum = isEdit ? editIndex : num;
+
         if(exmobile==""){
-            cols += '<th class="border-0 pl-0"><div class="custom-control custom-radio"><input type="radio" onclick="getradio('+num+')" id="pri'+num+'" name="customRadio"'
-            +'class="custom-control-input"><label class="custom-control-label" for="pri'+num+'"></label></div></th>';
-            cols += '<td class="border-0" id="username'+num+'">'+$("#title").find(":selected").val()+" "+$("#firstname").val()+" "+$("#lastname").val()+'</td>';
-            cols += '<td class="border-0" id="usermobile'+num+'">'+$("#code").val()+$("#mobileNo").val()+'</td>';
-            cols += '<td class="border-0" id="useremail'+num+'" hidden>'+$("#email").val()+'</td>';
-            cols += '<td class="border-0" id="userlastname'+num+'" hidden>'+$("#lastname").val()+'</td>';
-            cols += '<td class="border-0" id="usergender'+num+'" hidden>'+($('input[name="customRadioInline"]:checked').val()?$('input[name="customRadioInline"]:checked').val():"")+'</td>';
-            cols += '<td class="border-0" id="userfathername'+num+'" hidden>'+$("#fathername").val()+'</td>';
-            cols += '<td class="border-0" id="useroccupation'+num+'" hidden>'+$("#occupation").val()+'</td>';
-            cols += '<td class="border-0" id="userdob'+num+'" hidden>'+$("#dob").val()+'</td>';
-            cols += '<td class="border-0" id="useranniversary'+num+'" hidden>'+$("#anniversary").val()+'</td>';
-            cols += '<td class="border-0" id="usernationality'+num+'" hidden>'+$("#nationality").val()+'</td>';
-            cols += '<td class="border-0" id="uservip'+num+'" hidden>'+($('input[name="vip"]:checked').val()?$('input[name="vip"]:checked').val():"")+'</td>';
-            cols += '<td class="border-0" id="userpitype'+num+'" hidden>'+$("#pitype").val()+'</td>';
-            cols += '<td class="border-0" id="userpid'+num+'" hidden>'+$("#pid").val()+'</td>';
-            cols += '<td class="border-0" id="userimgfront'+num+'" hidden>'+$("#imgffront").val()+'</td>';
-            cols += '<td class="border-0" id="userimgback'+num+'" hidden>'+$("#imgbback").val()+'</td>';
-            cols += '<td class="border-0" id="usercomments'+num+'" hidden>'+$("#comments").val()+'</td>';
-            cols += '<td class="border-0" id="userimgguest'+num+'" hidden>'+$("#imggguest").val()+'</td>';
-            cols += '<td class="border-0" id="usercontacttype'+num+'" hidden>'+$("#contacttype").find(":selected").val()+'</td>';
-            cols += '<td class="border-0" id="usercountry'+num+'" hidden>'+$("#country").val()+'</td>';
-            cols += '<td class="border-0" id="userstate'+num+'" hidden>'+$("#state").val()+'</td>';
-            cols += '<td class="border-0" id="usercity'+num+'" hidden>'+$("#city").val()+'</td>';
-            cols += '<td class="border-0" id="userzipcode'+num+'" hidden>'+$("#zipcode").val()+'</td>';
-            cols += '<td class="border-0" id="useraddress'+num+'" hidden>'+$("#address").val()+'</td>';
-            cols += '<td class="border-0 pr-0 text-right"><button type="button" onclick="custdel('+num+')" id="custdel'+num+'" class="btn btn-danger-soft btn-xs custdelete'+num+'"><i class="far fa-trash-alt"></i></button></td>';
+            cols += '<th class="border-0 pl-0"><div class="custom-control custom-radio"><input type="radio" onclick="getradio('+targetNum+')" id="pri'+targetNum+'" name="customRadio"'
+            +'class="custom-control-input"><label class="custom-control-label" for="pri'+targetNum+'"></label></div></th>';
+            cols += '<td class="border-0" id="username'+targetNum+'">'+$("#title").find(":selected").val()+" "+$("#firstname").val()+" "+$("#lastname").val()+'</td>';
+            cols += '<td class="border-0" id="usermobile'+targetNum+'">'+$("#code").val()+$("#mobileNo").val()+'</td>';
+            cols += '<td class="border-0" id="useremail'+targetNum+'" hidden>'+$("#email").val()+'</td>';
+            cols += '<td class="border-0" id="userlastname'+targetNum+'" hidden>'+$("#lastname").val()+'</td>';
+            cols += '<td class="border-0" id="usergender'+targetNum+'" hidden>'+($('input[name="customRadioInline"]:checked').val()?$('input[name="customRadioInline"]:checked').val():"")+'</td>';
+            cols += '<td class="border-0" id="userfathername'+targetNum+'" hidden>'+$("#fathername").val()+'</td>';
+            cols += '<td class="border-0" id="useroccupation'+targetNum+'" hidden>'+$("#occupation").val()+'</td>';
+            cols += '<td class="border-0" id="userdob'+targetNum+'" hidden>'+$("#dob").val()+'</td>';
+            cols += '<td class="border-0" id="useranniversary'+targetNum+'" hidden>'+$("#anniversary").val()+'</td>';
+            cols += '<td class="border-0" id="usernationality'+targetNum+'" hidden>'+$("#nationality").val()+'</td>';
+            cols += '<td class="border-0" id="uservip'+targetNum+'" hidden>'+($('input[name="vip"]:checked').val()?$('input[name="vip"]:checked').val():"")+'</td>';
+            cols += '<td class="border-0" id="userpitype'+targetNum+'" hidden>'+$("#pitype").val()+'</td>';
+            cols += '<td class="border-0" id="userpid'+targetNum+'" hidden>'+$("#pid").val()+'</td>';
+            cols += '<td class="border-0" id="userimgfront'+targetNum+'" hidden>'+$("#imgffront").val()+'</td>';
+            cols += '<td class="border-0" id="userimgback'+targetNum+'" hidden>'+$("#imgbback").val()+'</td>';
+            cols += '<td class="border-0" id="usercomments'+targetNum+'" hidden>'+$("#comments").val()+'</td>';
+            cols += '<td class="border-0" id="userimgguest'+targetNum+'" hidden>'+$("#imggguest").val()+'</td>';
+            cols += '<td class="border-0" id="usercontacttype'+targetNum+'" hidden>'+$("#contacttype").find(":selected").val()+'</td>';
+            cols += '<td class="border-0" id="usercountry'+targetNum+'" hidden>'+$("#country").val()+'</td>';
+            cols += '<td class="border-0" id="userstate'+targetNum+'" hidden>'+$("#state").val()+'</td>';
+            cols += '<td class="border-0" id="usercity'+targetNum+'" hidden>'+$("#city").val()+'</td>';
+            cols += '<td class="border-0" id="userzipcode'+targetNum+'" hidden>'+$("#zipcode").val()+'</td>';
+            cols += '<td class="border-0" id="useraddress'+targetNum+'" hidden>'+$("#address").val()+'</td>';
+            cols += '<td class="border-0 pr-0 text-right"><button type="button" onclick="custedit('+targetNum+')" class="btn btn-info-soft btn-xs mr-1"><i class="fas fa-edit"></i></button><button type="button" onclick="custdel('+targetNum+')" id="custdel'+targetNum+'" class="btn btn-danger-soft btn-xs custdelete'+targetNum+'"><i class="far fa-trash-alt"></i></button></td>';
         }else{
-            cols += '<th class="border-0 pl-0"><div class="custom-control custom-radio"><input type="radio" onclick="getradio('+num+')" id="pri'+num+'" name="customRadio"'
-            +'class="custom-control-input"><label class="custom-control-label" for="pri'+num+'"></label></div></th>';
-            cols += '<td class="border-0" id="userid'+num+'" hidden>'+$("#existcustid").val()+'</td>';
-            cols += '<td class="border-0" id="username'+num+'">'+$("#existname").val()+'</td>';
-            cols += '<td class="border-0" id="usermobile'+num+'">'+$("#existmobile").val()+'</td>';
-            cols += '<td class="border-0 pr-0 text-right"><button type="button" onclick="custdel('+num+')" id="custdel'+num+'" class="btn btn-danger-soft btn-xs custdelete'+num+'"><i class="far fa-trash-alt"></i></button></td>';
+            cols += '<th class="border-0 pl-0"><div class="custom-control custom-radio"><input type="radio" onclick="getradio('+targetNum+')" id="pri'+targetNum+'" name="customRadio"'
+            +'class="custom-control-input"><label class="custom-control-label" for="pri'+targetNum+'"></label></div></th>';
+            cols += '<td class="border-0" id="userid'+targetNum+'" hidden>'+$("#existcustid").val()+'</td>';
+            cols += '<td class="border-0" id="username'+targetNum+'">'+$("#existname").val()+'</td>';
+            cols += '<td class="border-0" id="usermobile'+targetNum+'">'+$("#existmobile").val()+'</td>';
+            cols += '<td class="border-0 pr-0 text-right"><button type="button" onclick="custedit('+targetNum+')" class="btn btn-info-soft btn-xs mr-1"><i class="fas fa-edit"></i></button><button type="button" onclick="custdel('+targetNum+')" id="custdel'+targetNum+'" class="btn btn-danger-soft btn-xs custdelete'+targetNum+'"><i class="far fa-trash-alt"></i></button></td>';
             $("#existmobile").removeClass("is-valid").removeClass("is-invalid");
             $("#existname").val("");
             $("#existmobile").val("");
@@ -396,8 +399,14 @@ $(document).ready(function() {
         }
 
         newRow.append(cols);
-        $("table.customerdetail-1").append(newRow);
-        num++;
+        if (isEdit) {
+            $("table.customerdetail tbody tr").has("button#custdel"+editIndex).replaceWith(newRow);
+            $("table.customerdetail-1 tbody tr").has("button#custdel"+editIndex).replaceWith(newRow);
+            editIndex = null;
+        } else {
+            $("table.customerdetail-1").append(newRow);
+            num++;
+        }
         $("#firstname").val("");$("#title").val($("#title option:first").val());$("#code").val("");$("#mobileNo").val("");$("#email").val("");$("#imgbbcak").val();
         $("#lastname").val("");$('input[name="customRadioInline"]:checked').prop("checked",false);$("#country").val("");$("#imgffront").val('');$("#imggguest").val('');
         $("#fathername").val("");$("#occupation").val("");$("#dob").val("");$("#anniversary").val("");$('#image-preview').attr('src', 'http://localhost/Hotel//assets/img/proof_icon.png');
@@ -1084,4 +1093,45 @@ function childprices(n){
             $("#amount3"+n).val(obj.childrate);
     }
     });
+}var editIndex = null;
+function custedit(r){
+    editIndex = r;
+    $("#exampleModal").modal("show");
+    var full_name = $("#username"+r).text().split(" ");
+    var title = full_name[0];
+    var last_name = $("#userlastname"+r).text();
+    var first_name = $("#username"+r).text().replace(title + " ", "").replace(" " + last_name, "");
+    
+    $("#title").val(title);
+    $("#firstname").val(first_name);
+    $("#lastname").val(last_name);
+    
+    var mobile_full = $("#usermobile"+r).text();
+    $("#mobileNo").val(mobile_full); // it includes code but whatever
+    
+    $("#email").val($("#useremail"+r).text());
+    if($("#usergender"+r).text()) {
+        $('input[name="customRadioInline"][value="'+$("#usergender"+r).text()+'"]').prop("checked", true);
+    }
+    $("#fathername").val($("#userfathername"+r).text());
+    $("#occupation").val($("#useroccupation"+r).text());
+    $("#dob").val($("#userdob"+r).text());
+    $("#anniversary").val($("#useranniversary"+r).text());
+    
+    $("#nationality").val($("#usernationality"+r).text()).trigger('change');
+    $("#country").val($("#usercountry"+r).text()).trigger('change');
+    
+    if($("#uservip"+r).text()) {
+        $('input[name="vip"][value="'+$("#uservip"+r).text()+'"]').prop("checked", true);
+    }
+    $("#pitype").val($("#userpitype"+r).text());
+    $("#pid").val($("#userpid"+r).text());
+    $("#comments").val($("#usercomments"+r).text());
+    $("#contacttype").val($("#usercontacttype"+r).text());
+    $("#state").val($("#userstate"+r).text());
+    $("#city").val($("#usercity"+r).text());
+    $("#zipcode").val($("#userzipcode"+r).text());
+    $("#address").val($("#useraddress"+r).text());
+    
+    $("#addcustomer").attr("disabled", false);
 }

@@ -50,7 +50,7 @@
                             <button type="reset"
                                 class="btn btn-primary w-md m-b-5"><?php echo display('reset') ?></button>
                             <button id="disabledmode" disabled type="submit"
-                                class="btn btn-success w-md m-b-5 submitrosterbtn"><?php echo display('Ad') ?></button>
+                                class="btn btn-success w-md m-b-5 submitrosterbtn"><?php echo display('shift_add') ?></button>
                         </div>
                     </div>
                 </div>

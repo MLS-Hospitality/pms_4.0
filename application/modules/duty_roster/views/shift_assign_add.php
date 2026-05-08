@@ -38,7 +38,7 @@
                         </div>
                         <div class="form-group text-right">
                             <button type="submit" hidden id="sbmit"
-                                class="btn btn-success w-md m-b-5"><?php echo display('ad') ?></button>
+                                class="btn btn-success w-md m-b-5"><?php echo display('shift_assign_add') ?></button>
                         </div>
                     </div>
                     <?php echo form_close() ?>

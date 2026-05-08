@@ -32,17 +32,20 @@ class Auth extends MX_Controller
 				if ($user->row()->status != 0) {
 
 
+					$permission = array();
+					$permission1 = array();
 					$checkPermission = $this->auth_model->userPermission2($user->row()->id);
 					if ($checkPermission != NULL) {
-						$permission = array();
-						$permission1 = array();
 						if (!empty($checkPermission)) {
 							foreach ($checkPermission as $value) {
+								if (!isset($permission[$value->module])) {
+									$permission[$value->module] = array('create' => 0, 'read' => 0, 'update' => 0, 'delete' => 0);
+								}
 								$permission[$value->module] = array(
-									'create' => $value->create,
-									'read'   => $value->read,
-									'update' => $value->update,
-									'delete' => $value->delete
+									'create' => max($permission[$value->module]['create'], $value->create),
+									'read'   => max($permission[$value->module]['read'], $value->read),
+									'update' => max($permission[$value->module]['update'], $value->update),
+									'delete' => max($permission[$value->module]['delete'], $value->delete)
 								);
 
 								$permission1[$value->menu_title] = array(

@@ -420,6 +420,13 @@ function validateAdvanceAmount() {
         return false;
     }
 
+    // Restore button state if validation passes
+    submitButton.prop('disabled', false)
+        .removeClass('btn-secondary')
+        .addClass('btn-primary');
+    $("#msg1").text("");
+    return true;
+
     // Bank payment allows partial
     submitButton.prop('disabled', false)
         .removeClass('btn-secondary')
@@ -432,7 +439,18 @@ function validateAdvanceAmount() {
 // Real-time validation on field changes
 $(document).ready(function() {
     'use strict';
-    $("#totalamount, #advanceamount").on('input change', function() {
+    $("#totalamount, #advanceamount, #paymentmode").on('input change', function() {
+        var paymentmode = $("#paymentmode").val();
+        var totalAmount = $("#totalamount").val();
+        
+        // Auto-fill advance amount for Card Payment if empty
+        if (paymentmode === "Card Payment") {
+            $("#advanceamount").prop("disabled", false);
+            if ($("#advanceamount").val() == "" || $("#advanceamount").val() == 0) {
+                $("#advanceamount").val(totalAmount);
+            }
+        }
+        
         validateAdvanceAmount();
     });
 
@@ -487,7 +505,12 @@ function checkinBooking() {
         return false;
     }
     var currtime = $("#currtime").val();
-    if (currtime < datefilter1) {
+    var currDate = currtime.split(' ')[0];
+    var checkinDate = datefilter1.split(' ')[0];
+
+    // Only show warning if the check-in DATE is actually in the future, 
+    // not just a later hour on the same day.
+    if (currtime < datefilter1 && currDate !== checkinDate) {
         swal({
             title: "Warning",
             text: "Checkin time is greater than current time",

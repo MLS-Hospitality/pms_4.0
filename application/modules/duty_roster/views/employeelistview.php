@@ -4,7 +4,7 @@
         $chechedemp = $this->db->select('emp_id,roster_id')
         ->from('tbl_emproster_assign')
         ->where('emp_startroster_date >=', $rstrt_date)
-        ->where('emp_endroster_date <=', $rend_date)
+        ->where('emp_startroster_date <=', $rend_date)
         ->group_by('emp_id')->get()->result(); 
 
         if(!empty($emp_list)){

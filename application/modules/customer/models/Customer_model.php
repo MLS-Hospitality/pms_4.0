@@ -33,13 +33,29 @@ class Customer_model extends CI_Model {
 	} 
 	public function update($data = array())
 	{
-		return $this->db->where('customerid',$data["customerid"])
+		$this->db->where('customerid',$data["customerid"])
 			->update($this->table, $data);
+		return true;
 	}
 	public function guestupdate($data = array())
 	{
-		return $this->db->where('otherguest_id',$data["otherguest_id"])
+		$gid = (string)$data["otherguest_id"];
+		if (isset($gid[0]) && $gid[0] == 'P') {
+			$customerid = substr($gid, 1);
+			$custData = array(
+				'firstname' => $data['guestname'],
+				'gender'    => $data['gender'],
+				'cust_phone' => $data['mobile'],
+				'email'     => $data['email'],
+				'pitype'    => $data['photo_id_type'],
+				'pid'       => $data['photo_id']
+			);
+			$this->db->where('customerid', $customerid)->update('customerinfo', $custData);
+			return true;
+		}
+		$this->db->where('otherguest_id',$data["otherguest_id"])
 			->update("tbl_otherguest", $data);
+		return true;
 	}
 
     public function read()
@@ -55,11 +71,33 @@ class Customer_model extends CI_Model {
 	} 
     public function guestread()
 	{
-	    $this->db->select('og.*,bi.booking_number');
+	    // Query for additional guests (occupants)
+	    $this->db->select('og.otherguest_id, og.bookedid, og.customerid, 
+            COALESCE(og.guestname, CONCAT_WS(" ", ci.firstname, ci.lastname)) as guestname, 
+            COALESCE(og.gender, ci.gender) as gender, 
+            COALESCE(og.mobile, ci.cust_phone) as mobile, 
+            COALESCE(og.email, ci.email) as email, 
+            COALESCE(og.photo_id_type, ci.pitype) as photo_id_type, 
+            COALESCE(og.photo_id, ci.pid) as photo_id, 
+            og.front_image, og.back_image, og.occupant_image, og.type, bi.booking_number', FALSE);
         $this->db->from("tbl_otherguest og");
 		$this->db->join("booked_info bi", "bi.bookedid=og.bookedid","left");
-        $this->db->order_by('bookedid', 'desc');
-        $query = $this->db->get();
+        $this->db->join("customerinfo ci", "ci.customerid=og.customerid","left");
+        $query1 = $this->db->get_compiled_select();
+
+        // Query for primary customers
+        $this->db->select('CONCAT("P", bi.bookedid) as otherguest_id, bi.bookedid, bi.cutomerid as customerid, 
+            CONCAT_WS(" ", ci.firstname, ci.lastname) as guestname, 
+            ci.gender, ci.cust_phone as mobile, ci.email, 
+            ci.pitype as photo_id_type, ci.pid as photo_id, 
+            ci.imgfront as front_image, ci.imgback as back_image, ci.imgguest as occupant_image, 1 as type, bi.booking_number', FALSE);
+        $this->db->from("booked_info bi");
+        $this->db->join("customerinfo ci", "ci.customerid=bi.cutomerid","left");
+        $this->db->where("bi.bookingstatus", 4); // Only currently checked-in
+        $query2 = $this->db->get_compiled_select();
+        
+        $query = $this->db->query($query1." UNION ".$query2." ORDER BY bookedid DESC");
+
         if ($query->num_rows() > 0) {
             return $query->result();    
         }
@@ -75,6 +113,18 @@ class Customer_model extends CI_Model {
 	} 
 	public function findByGuestId($id = null)
 	{ 
+		$gid = (string)$id;
+		if (isset($gid[0]) && $gid[0] == 'P') {
+			$customerid = substr($gid, 1);
+			$res = $this->db->select("customerid as otherguest_id, firstname as guestname, gender, cust_phone as mobile, email, pitype as photo_id_type, pid as photo_id")->from("customerinfo")
+				->where('customerid', $customerid)
+				->get()
+				->row();
+			if ($res) {
+				$res->otherguest_id = "P" . $res->otherguest_id;
+			}
+			return $res;
+		}
 		return $this->db->select("*")->from("tbl_otherguest")
 			->where('otherguest_id',$id) 
 			->get()
@@ -221,5 +271,15 @@ public function headcode(){
         $query = $this->db->get();
 		$result = $query->row();
         return $result;    
+	}
+
+	public function stayHistory($id)
+	{
+		$this->db->select('bi.booking_number, bi.checkindate, bi.checkoutdate, bi.room_no, bi.total_price, bi.paid_amount, bi.bookingstatus');
+		$this->db->from('booked_info bi');
+		$this->db->where('bi.cutomerid', $id);
+		$this->db->order_by('bi.checkindate', 'DESC');
+		$query = $this->db->get();
+		return $query->result();
 	}
 }

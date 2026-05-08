@@ -95,26 +95,25 @@ $(document).ready(function () {
 var date = new Date();
 date.setDate(date.getDate()-1);
 var findate = $("#findate").val();
+if(findate === "") { findate = null; }
 $('.datepickers').bootstrapMaterialDatePicker({
 format: 'YYYY-MM-DD',
-startDate: new Date(),
 shortTime: false,
 date: true,
 time: false,
-monthPicker: false,
-year: false,
+monthPicker: true,
+year: true,
 switchOnClick: true,
 maxDate: findate,
 });
 date.setDate(date.getDate()-1);
 $('.datepickerwithoutprevdate').bootstrapMaterialDatePicker({
 format: 'YYYY-MM-DD',
-startDate: new Date(),
 shortTime: false,
 date: true,
 time: false,
-monthPicker: false,
-year: false,
+monthPicker: true,
+year: true,
 switchOnClick: true,
 maxDate: findate,
 minDate:new Date(),
@@ -123,12 +122,11 @@ minDate:new Date(),
 $('.datepickerwithoutprevdate').on('change',function () {
 $('.datepickerwithoutprevdates').bootstrapMaterialDatePicker({
 format: 'YYYY-MM-DD',
-startDate: new Date(),
 shortTime: false,
 date: true,
 time: false,
-monthPicker: false,
-year: false,
+monthPicker: true,
+year: true,
 maxDate: findate,
 switchOnClick: true,
 });
@@ -138,23 +136,21 @@ $('.datepickerwithoutprevdates').bootstrapMaterialDatePicker('setMinDate', date)
 //time picker
 $('.timepicker').bootstrapMaterialDatePicker({
     format: 'YYYY-MM-DD',
-    startDate: new Date(),
     shortTime: true,
     date: false,
     time: true,
-    monthPicker: false,
-    year: false,
+    monthPicker: true,
+    year: true,
     switchOnClick: true,
     });
 //attendance time picker
 $('.atttimepicker').bootstrapMaterialDatePicker({
     format: 'hh:mm:ss a',
-    startDate: new Date(),
     shortTime: true,
     date: false,
     time: true,
-    monthPicker: false,
-    year: false,
+    monthPicker: true,
+    year: true,
     switchOnClick: true,
     });
 
@@ -164,12 +160,11 @@ $('.atttimepicker').bootstrapMaterialDatePicker({
     date.setDate(date.getDate()-1);
     $('.datetimepickers').bootstrapMaterialDatePicker({
         format: 'YYYY-MM-DD HH:mm',
-        startDate: new Date(),
         shortTime: false,
         date: true,
         time: true,
-        monthPicker: false,
-        year: false,
+        monthPicker: true,
+        year: true,
         switchOnClick: true,
     });   
 
@@ -245,12 +240,11 @@ var fin_date = new Date();
 fin_date.setFullYear(fin_date.getFullYear() + 2);
 $('.fin_datepicker').bootstrapMaterialDatePicker({
     format: 'YYYY-MM-DD',
-    startDate: new Date(),
     shortTime: false,
     date: true,
     time: false,
-    monthPicker: false,
-    year: false,
+    monthPicker: true,
+    year: true,
     switchOnClick: true,
     maxDate: fin_date,
 });

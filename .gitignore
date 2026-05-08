@@ -1,2 +1,4 @@
-.env
 *.sql
+application/cache/temp/*
+application/logs/*
+.env

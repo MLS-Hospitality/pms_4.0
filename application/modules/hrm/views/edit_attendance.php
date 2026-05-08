@@ -45,6 +45,9 @@
               try {
                 $in = new DateTime($sign_in);
                 $Out = new DateTime($sign_out);
+                if ($Out < $in) {
+                  $Out->modify('+1 day');
+                }
                 $interval = $in->diff($Out);
                 $myinit = $interval->format('%H:%I:%S');
                 echo $myinit;

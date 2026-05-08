@@ -79,25 +79,25 @@ $query_builder = TRUE;
 $active_record = TRUE;//ci version 2.x
 
 $db['default'] = array(
-    'dsn'   => '',
-    'hostname' => 'localhost',
-    'username' => 'u274235606_regal_empire',
-    'password' => 'W5!8oZAZ/l1K',
-    'database' => 'u274235606_regal_empire',
-    'dbdriver' => 'mysqli',
-    'dbprefix' => '',
-    'pconnect' => FALSE,
-    'db_debug' => (ENVIRONMENT !== 'production'),
-    'cache_on' => FALSE,
-    'cachedir' => '',
-    'char_set' => 'utf8',
-    'dbcollat' => 'utf8_general_ci',
-    'swap_pre' => '',
-    'encrypt'  => FALSE,
-    'compress' => FALSE,
-    'autoinit' => TRUE,//ci version 2.x
-    'stricton' => FALSE,
-    'failover' => array(),
+    'dsn'      => '',
+    'hostname'  => getenv('DB_HOSTNAME') ?: 'localhost',
+    'username'  => getenv('DB_USERNAME') ?: 'u274235606_regal_empire',
+    'password'  => getenv('DB_PASSWORD') ?: 'W5!8oZAZ/l1K',
+    'database'  => getenv('DB_DATABASE') ?: 'u274235606_regal_empire',
+    'dbdriver'  => 'mysqli',
+    'dbprefix'  => '',
+    'pconnect'  => FALSE,
+    'db_debug'  => (ENVIRONMENT !== 'production'),
+    'cache_on'  => FALSE,
+    'cachedir'  => '',
+    'char_set'  => 'utf8',
+    'dbcollat'  => 'utf8_general_ci',
+    'swap_pre'  => '',
+    'encrypt'   => FALSE,
+    'compress'  => FALSE,
+    'autoinit'  => TRUE, //ci version 2.x
+    'stricton'  => FALSE,
+    'failover'  => array(),
     'save_queries' => TRUE
 );
 

@@ -55,7 +55,7 @@
 
                         <div class="form-group text-right">
                             <button type="reset" class="btn btn-primary w-md m-b-5"><?php echo display('reset') ?></button>
-                            <button id="disabledmode" disabled type="submit" onclick="checkgapshift()" class="btn btn-success w-md m-b-5 submitshiftbtn"><?php echo display('Ad') ?></button>
+                            <button id="disabledmode" disabled type="submit" onclick="checkgapshift()" class="btn btn-success w-md m-b-5 submitshiftbtn"><?php echo display('shift_add') ?></button>
                         </div>
                     </div>
                 </div>

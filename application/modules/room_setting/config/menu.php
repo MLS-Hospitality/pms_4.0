@@ -62,7 +62,12 @@ $HmvcMenu["room_setting"] = array(
             "permission" => "read"
         
     ), 
+    "assign_room" => array(
+        //menu name
+            "controller" => "room_details",
+            "method"     => "roomassign",
+            "url"        => "room_setting/assign-room",
+            "permission" => "read"
+        
+    ), 
 );
-   
-
- 

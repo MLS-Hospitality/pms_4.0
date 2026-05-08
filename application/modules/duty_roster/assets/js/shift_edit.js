@@ -32,32 +32,22 @@ function shifttimechk() {
 			parts[1] * 60; 
 		}
 
-		var difference = Math.abs(toSeconds(leave_from1) - toSeconds(leave_to1));
-		var h= Math.floor(difference / 3600); 
-		var m = Math.floor((difference % 3600) / 60); 
-		if(isNaN(h) || isNaN(h)) {
+		var start_sec = toSeconds(leave_from1);
+		var end_sec = toSeconds(leave_to1);
+		if (end_sec <= start_sec) {
+			end_sec += 24 * 3600;
+		}
+		var difference = end_sec - start_sec;
+		var h = Math.floor(difference / 3600);
+		var m = Math.floor((difference % 3600) / 60);
+		if (isNaN(h) || isNaN(m)) {
 			h = '';
 			m = '';
-		}else{
-			h = h+':';
-			m = m;
+		} else {
+			h = (h < 10 ? '0' + h : h) + ':';
+			m = (m < 10 ? '0' + m : m);
 		}
-		$('#shifttimetotal2').val(h+m);
-        
-        if (leave_from1 > leave_to1) {
-            
-            $('#shift_start2').val(shift_starth2);
-            $('#shift_end2').val(shift_endh2);
-            $('#shifttimetotal2').val(shifttimetotal_h2);
-            swal({
-						title: "Failed",
-						text: "Shift End Time Should Larger Then Start Time",
-						type: "warning",
-						confirmButtonColor: "#28a745",
-						confirmButtonText: "Ok",
-						closeOnConfirm: true
-					});
-         }
+		$('#shifttimetotal2').val(h + m);
 		$.ajax({
 			type: "POST",
 			url: base+"duty_roster/Shift_management/check_inshiftedit",
