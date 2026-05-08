@@ -23,29 +23,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$https = false;
-if (isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1) || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
-    $protocol = 'https://';
-} else {
-    $protocol = 'http://';
-}
-
-$dirname = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/') . '/';
-$root = $protocol . $_SERVER['HTTP_HOST'] . $dirname;
-$config["base_url"] = $root;
-
-/*
-|--------------------------------------------------------------------------
-| Index File
-|--------------------------------------------------------------------------
-|
-| Typically this will be your index.php file, unless you've renamed it to
-| something else. If you are using mod_rewrite to remove the page set this
-| variable so that it is blank.
-|
-*/
-$config['index_page'] = '';
-
+$protocol = (isset($_SERVER["HTTPS"]) && ($_SERVER["HTTPS"] == "on" || $_SERVER["HTTPS"] == 1) || isset($_SERVER["HTTP_X_FORWARDED_PROTO"]) && $_SERVER["HTTP_X_FORWARDED_PROTO"] == "https") ? "https://" : "http://";
+$http_host = isset($_SERVER["HTTP_X_FORWARDED_HOST"]) ? $_SERVER["HTTP_X_FORWARDED_HOST"] : (isset($_SERVER["HTTP_HOST"]) ? $_SERVER["HTTP_HOST"] : "localhost");
+$dirname = rtrim(dirname($_SERVER["SCRIPT_NAME"]), "/") . "/";
+$config["base_url"] = $protocol . $http_host . $dirname;
+$config["index_page"] = "";
 /*
 |--------------------------------------------------------------------------
 | URI PROTOCOL
