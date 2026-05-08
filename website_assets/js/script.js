@@ -331,3 +331,49 @@ function language_select(element) {
         }
     });
 }
+
+/* =====================================================
+   IntersectionObserver — Scroll Reveal
+   Targets elements with [data-reveal] attribute.
+   Values: "fade-up" | "fade-right" | "fade-left"
+   ===================================================== */
+(function initScrollReveal() {
+    // Honour user preference for reduced motion
+    var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var revealElements = document.querySelectorAll('[data-reveal]');
+
+    if (!revealElements.length) return;
+
+    // If reduced motion is preferred, make all elements visible immediately
+    if (prefersReducedMotion) {
+        revealElements.forEach(function (el) {
+            el.classList.add('reveal-visible');
+        });
+        return;
+    }
+
+    // Add the base hidden class to each element
+    revealElements.forEach(function (el) {
+        var direction = el.getAttribute('data-reveal') || 'fade-up';
+        el.classList.add('reveal-hidden', 'reveal-' + direction);
+    });
+
+    // Create the observer
+    var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('reveal-visible');
+                // Unobserve after reveal so it only fires once
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.12,      // trigger when 12% of element is visible
+        rootMargin: '0px 0px -40px 0px'  // slightly before the bottom edge
+    });
+
+    revealElements.forEach(function (el) {
+        observer.observe(el);
+    });
+})();

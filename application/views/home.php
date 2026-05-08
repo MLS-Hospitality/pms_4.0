@@ -93,54 +93,58 @@
     </div>
     <!-- /.End of slider preloader -->
 </div>
-<!-- /.End of hero header -->
-<div class="container">
-    <div class="search-area">
-        <?php echo form_open('user/roomlist'); ?>
-        <div class="row no-gutters custom-search-input-2 search-form-content">
-            <div class="search-option col-12 col-sm-6 col-lg-3">
-                <label><?php echo display('check_in') ?> <i class="ti-calendar"></i></label>
-                <input id="daterangepicker" class="form-control" type="text" name="checkin"
-                    value="<?php date('Y-m-d'); ?>">
-            </div>
-            <div class="search-option col-12 col-sm-6 col-lg-3">
-                <label><?php echo display('check_out') ?> <i class="ti-calendar"></i></label>
-                <input id="daterangepicker2" class="form-control" type="text" name="checkout"
-                    value="<?php date('Y-m-d'); ?>">
-            </div>
-            <div class="search-option col-12 col-sm-6 col-lg-3">
-                <div class="d-flex align-items-center justify-content-between h-50 border-bottom w-100 px-lg-3 px-xl-4">
-                    <div class="search-title fs-13 text-uppercase"><?php echo display('adults') ?></div>
-                    <div class="d-flex justify-content-center align-items-center number-spinner">
-                        <a class=" btn-pm" data-dir="dwn"><span class="ti-minus"></span></a>
-                        <input type="text" class="spinner" name="adults" value="2">
-                        <a class=" btn-pm" data-dir="up"><span class="ti-plus"></span></a>
-                    </div>
-                </div>
-                <div class="d-flex align-items-center justify-content-between h-50 w-100 px-lg-3 px-xl-4">
-                    <div class="search-title fs-13 text-uppercase"><?php echo display('children') ?></div>
-                    <div class="d-flex justify-content-center align-items-center children">
-                        <a class=" btn-pm" data-dir="dwn"><span class="ti-minus"></span></a>
-                        <input type="text" class="spinner" name="children" value="0">
-                        <a class=" btn-pm" data-dir="up"><span class="ti-plus"></span></a>
-                    </div>
-                </div>
-            </div>
-            <?php $hotline = $this->db->select('*')->from('tbl_slider')->where('slid', 75)->get()->row(); ?>
-            <div class="col-lg-3">
-                <button type="submit" class="btn">
-                    <span><?php echo display('need_help') ?>
-                        <p><?php echo html_escape($hotline->subtitle); ?></p>
-                    </span>
-                    <?php echo display('check_availability') ?>
-                </button>
-            </div>
-        </div>
-        <?php echo form_close() ?>
-    </div>
-</div>
 <!-- /.End of search area -->
-<div class="section section-feature bg-gray position-relative">
+<section class="search-section">
+    <div class="container">
+        <span class="section-label"><?php echo display('check_availability') ?></span>
+        <div class="search-area">
+            <?php echo form_open('user/roomlist'); ?>
+            <div class="row no-gutters custom-search-input-2 search-form-content">
+                <div class="search-option col-12 col-sm-6 col-lg-3">
+                    <label><?php echo display('check_in') ?> <i class="ti-calendar"></i></label>
+                    <input id="daterangepicker" class="form-control" type="text" name="checkin"
+                        value="<?php date('Y-m-d'); ?>">
+                </div>
+                <div class="search-option col-12 col-sm-6 col-lg-3">
+                    <label><?php echo display('check_out') ?> <i class="ti-calendar"></i></label>
+                    <input id="daterangepicker2" class="form-control" type="text" name="checkout"
+                        value="<?php date('Y-m-d'); ?>">
+                </div>
+                <div class="search-option col-12 col-sm-6 col-lg-3">
+                    <div class="d-flex align-items-center justify-content-between h-50 border-bottom w-100 px-lg-3 px-xl-4">
+                        <div class="search-title fs-13 text-uppercase"><?php echo display('adults') ?></div>
+                        <div class="d-flex justify-content-center align-items-center number-spinner">
+                            <a class=" btn-pm" data-dir="dwn"><span class="ti-minus"></span></a>
+                            <input type="text" class="spinner" name="adults" value="2">
+                            <a class=" btn-pm" data-dir="up"><span class="ti-plus"></span></a>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between h-50 w-100 px-lg-3 px-xl-4">
+                        <div class="search-title fs-13 text-uppercase"><?php echo display('children') ?></div>
+                        <div class="d-flex justify-content-center align-items-center children">
+                            <a class=" btn-pm" data-dir="dwn"><span class="ti-minus"></span></a>
+                            <input type="text" class="spinner" name="children" value="0">
+                            <a class=" btn-pm" data-dir="up"><span class="ti-plus"></span></a>
+                        </div>
+                    </div>
+                </div>
+                <?php $hotline = $this->db->select('*')->from('tbl_slider')->where('slid', 75)->get()->row(); ?>
+                <div class="col-lg-3">
+                    <button type="submit" class="btn">
+                        <span><?php echo display('need_help') ?>
+                            <p><?php echo html_escape($hotline->subtitle); ?></p>
+                        </span>
+                        <?php echo display('check_availability') ?>
+                    </button>
+                </div>
+            </div>
+            <?php echo form_close() ?>
+        </div>
+    </div>
+</section>
+<!-- /.End of search section -->
+
+<div class="section section-feature bg-gray position-relative" data-reveal="fade-up">
     <div class="container">
         <div class="row">
             <div class="col-sm-6 col-md-3 mb-4 mb-md-0">
@@ -205,12 +209,12 @@
 <!-- /.End of feature -->
 
 <?php if ($visibilities->home_about_visible_status): ?>
-    <div class="section section-about">
+    <div class="section section-about" data-reveal="fade-up">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-5 col-md-6 col-12">
                     <?php foreach ($banner_homemiddle as $homemiddle) { ?>
-                        <div class="position-relative">
+                        <div class="position-relative" data-reveal="fade-right">
                             <img src="<?php echo base_url() . html_escape(!empty($homemiddle->image) ? $homemiddle->image : 'assets/img/Home-page/below_slider.png'); ?>"
                                 class="rounded img-fluid mx-auto d-block" alt="">
                             <div class="play-icon">
@@ -255,7 +259,7 @@
 <?php endif; ?>
 <!-- /.End of join box -->
 <?php if ($visibilities->top_offer_visible_status): ?>
-    <div class="section bg-gray">
+    <div class="section bg-gray" data-reveal="fade-up">
         <div class="container">
             <div class="row">
                 <?php $topoffers = $this->db->select('*')->from('tbl_widget')->where('widgetid', 4)->get()->row(); ?>
@@ -292,7 +296,7 @@
 $destination = $this->db->select('*')->from('tbl_widget')->where('widgetid', 5)->get()->row();
 if ($visibilities->blog_offer_visible_status):
 ?>
-    <div class="section section-destination">
+    <div class="section section-destination" data-reveal="fade-up">
         <div class="container">
             <div class="row">
                 <div class="col-md-10 offset-md-1">

@@ -1258,12 +1258,44 @@ alert-warning {
 
 /*Search form*/
 
+/* Search section — standalone band, zero overlap with hero */
+.search-section {
+    position: relative;
+    z-index: 5;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    padding: 48px 0 56px;
+}
+
+/* Subtle top accent line */
+.search-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #bd0f0f, #e8534a, #bd0f0f, transparent);
+}
+
+.search-section .section-label {
+    display: block;
+    text-align: center;
+    color: rgba(255,255,255,0.6);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
 .search-area {
     position: relative;
     z-index: 1;
-    margin: 3rem 0;
-    border-radius: 6px;
+    margin: 0;
+    border-radius: 12px;
     overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35), 0 4px 16px rgba(0, 0, 0, 0.2);
+    background: #fff;
 }
 
 .search-form-content .form-group {
@@ -1335,11 +1367,12 @@ alert-warning {
 }
 
 @media(max-width: 991px) {
+    .search-section {
+        padding: 32px 0 40px;
+    }
     .search-area {
-        padding: 30px;
-        -webkit-box-shadow: 0 0 3px rgba(52, 58, 64, 0.15) !important;
-        box-shadow: 0 0 3px rgba(52, 58, 64, 0.15) !important;
-        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25) !important;
     }
     .search-form-content .search-option {
         height: 82px;
@@ -1348,10 +1381,9 @@ alert-warning {
 }
 
 @media(min-width: 992px) {
-    .search-area {
-        margin: -55px 0;
-        -webkit-box-shadow: 0 0 3px rgba(52, 58, 64, 0.15) !important;
-        box-shadow: 0 0 3px rgba(52, 58, 64, 0.15) !important;
+    /* Hero stands alone — no padding hacks needed */
+    .hero-header {
+        padding-bottom: 0;
     }
     .search-form-content .search-option {
         border-right: 1px solid rgba(128, 128, 128, 0.2);
@@ -1364,7 +1396,6 @@ alert-warning {
         display: block;
         position: absolute;
         z-index: 2;
-        width: 24px;
         top: 0;
         bottom: 0;
         width: 9px;
@@ -2919,3 +2950,44 @@ img.bg-image {
 .wa-right{
     right: 65px !important;
 }
+
+/* =====================================================
+   Scroll Reveal — IntersectionObserver Animation System
+   ===================================================== */
+
+/* Base hidden state — applied by JS before observing */
+.reveal-hidden {
+    opacity: 0;
+    will-change: opacity, transform;
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Directional start positions */
+.reveal-hidden.reveal-fade-up {
+    transform: translateY(40px);
+}
+
+.reveal-hidden.reveal-fade-right {
+    transform: translateX(-40px);
+}
+
+.reveal-hidden.reveal-fade-left {
+    transform: translateX(40px);
+}
+
+/* Revealed state — added by IntersectionObserver */
+.reveal-visible {
+    opacity: 1 !important;
+    transform: translate(0, 0) !important;
+}
+
+/* Stagger children inside a revealed section */
+[data-reveal] > * {
+    transition-delay: 0ms;
+}
+
+[data-reveal].reveal-visible > *:nth-child(1) { transition-delay: 0ms; }
+[data-reveal].reveal-visible > *:nth-child(2) { transition-delay: 80ms; }
+[data-reveal].reveal-visible > *:nth-child(3) { transition-delay: 160ms; }
+[data-reveal].reveal-visible > *:nth-child(4) { transition-delay: 240ms; }
