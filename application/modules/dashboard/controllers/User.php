@@ -51,11 +51,14 @@ class User extends MX_Controller {
 		$this->form_validation->set_rules('firstname', display('firstname'),'required|max_length[50]|xss_clean');
 		$this->form_validation->set_rules('lastname', display('lastname'),'required|max_length[50]|xss_clean');
 		if (empty($id)) {   
-			$data['title']    = "Edit User";
+			$data['title']    = display('add_user');
        		$this->form_validation->set_rules('email', display('email'), "required|valid_email|is_unique[user.email]|max_length[100]|xss_clean");
+			$this->form_validation->set_rules('password', display('password'),'required|max_length[32]|xss_clean');
 		} else {
+			$data['title']    = display('edit_user');
 			$this->form_validation->set_rules('email', display('email'),'required|valid_email|max_length[100]|xss_clean');
-		}		$this->form_validation->set_rules('password', display('password'),'required|max_length[32]|md5|xss_clean');
+			$this->form_validation->set_rules('password', display('password'),'max_length[32]|xss_clean');
+		}
 		$this->form_validation->set_rules('about', display('about'),'max_length[1000]|xss_clean');
 		$this->form_validation->set_rules('status', display('status'),'max_length[1]|xss_clean');
         $config['upload_path']          = './assets/img/user/';
@@ -74,12 +77,11 @@ class User extends MX_Controller {
 			$this->image_lib->resize();
 			$this->session->set_flashdata('message', display('image_upload_successfully'));
         }
-			$data['user'] = (object)$userLevelData = array(
+			$userLevelData = array(
 			'id' 		  => $this->input->post('id', TRUE),
 			'firstname'   => $this->input->post('firstname',TRUE),
 			'lastname' 	  => $this->input->post('lastname',TRUE),
 			'email' 	  => $this->input->post('email',TRUE),
-			'password' 	  => md5($this->input->post('password')),
 			'about' 	  => $this->input->post('about',TRUE),
 			'image'   	  => (!empty($image)?$image:$this->input->post('old_image',TRUE)),
 			'last_login'  => null,
@@ -90,11 +92,17 @@ class User extends MX_Controller {
 			'is_admin'    => 0
 		);
 
+		if ($this->input->post('password')) {
+			$userLevelData['password'] = md5($this->input->post('password'));
+		}
+		
+		$data['user'] = (object)$userLevelData;
+
 
 		if ($this->form_validation->run()) {
 
-	        if (empty($userLevelData['image'])) {
-				$error= $this->upload->display_errors();
+			// Only require an image when creating a new user, not on edit
+	        if (empty($userLevelData['id']) && empty($userLevelData['image'])) {
 				$error="You did not select any valid image to upload as your profile picture.";
 				$this->session->set_flashdata('exception', $error); 
 	        }
@@ -105,7 +113,7 @@ class User extends MX_Controller {
 				} else {
 					$this->session->set_flashdata('exception', display('please_try_again'));
 				}
-				redirect("add-user");
+				redirect("user-list");
 
 			} else {
 				if ($this->user_model->update($userLevelData)) {						
