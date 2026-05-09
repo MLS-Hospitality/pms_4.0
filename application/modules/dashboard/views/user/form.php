@@ -18,11 +18,12 @@
             </div>
             <div class="card-body">
                 <?php if(empty($user->id)){ ?>
-                <?php echo form_open_multipart("add-user/$user->id") ?>
+                <?php echo form_open_multipart("add-user") ?>
                 <?php echo form_hidden('id',$user->id) ?>
                 <?php } else{ ?>
                     <?php echo form_open_multipart("edit-user/$user->id") ?>
                 <?php echo form_hidden('id',$user->id) ?>                <?php } ?>
+                <?php echo validation_errors() ?>
                 <div class="form-group row">
                     <label for="firstname" class="col-sm-3 col-form-label"><?php echo display('firstname') ?> <span
                             class="text-danger">*</span></label>
@@ -51,11 +52,11 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="password" class="col-sm-3 col-form-label"><?php echo display('password') ?> <span
-                            class="text-danger">*</span></label>
+                    <label for="password" class="col-sm-3 col-form-label"><?php echo display('password') ?> <?php if(empty($user->id)){ ?><span
+                            class="text-danger">*</span><?php } ?></label>
                     <div class="col-sm-9">
                         <input name="password" class="form-control" type="password"
-                            placeholder="<?php echo display('password') ?>" id="password" required>
+                            placeholder="<?php echo display('password') ?>" id="password" <?php if(empty($user->id)){ echo "required"; } ?>>
                     </div>
                 </div>
                 <div class="form-group row">
